@@ -3,128 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0f0a">
 <title>⚙️ Admin — Pont Bascule</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script src="https://apis.google.com/js/api.js" async onload="gapiLoaded()"></script>
 <style>
 :root {
-  --bg: #0a0f0a;
-  --s1: #111811;
-  --s2: #182018;
-  --s3: #1f281f;
-  --border: #273227;
-  --border2: #344834;
-  --gold: #d4a843;
-  --gold2: #f0c86a;
-  --green: #4caf50;
-  --green2: #6fcf74;
-  --red: #e05252;
-  --blue: #5ba3e8;
-  --text: #e4ede4;
-  --text2: #9ab09a;
-  --text3: #5a785a;
-  --r: 10px;
-  --r2: 6px;
+  --bg:#0a0f0a;--surface:#111811;--surface2:#182018;--surface3:#1f281f;
+  --border:#273227;--border2:#344834;
+  --gold:#c9a84c;--gold2:#e8c96a;--green:#4caf50;--green2:#66bb6a;
+  --red:#ef5350;--red2:#ff7043;--blue:#42a5f5;
+  --text:#e8f0e8;--text2:#a8bca8;--text3:#6a886a;
+  --radius:12px;--radius2:8px;--shadow:0 4px 24px rgba(0,0,0,.4);--shadow2:0 2px 8px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 
-/* LOCK SCREEN */
-#lock-screen {
-  position:fixed;inset:0;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9999;gap:20px;
-  background-image: radial-gradient(ellipse at 30% 40%, rgba(212,168,67,0.06) 0%, transparent 60%),
-                    radial-gradient(ellipse at 70% 70%, rgba(76,175,80,0.04) 0%, transparent 50%);
-}
-.lock-icon{font-size:48px;animation:pulse 2s ease-in-out infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-.lock-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gold);letter-spacing:-1px;}
-.lock-sub{font-size:13px;color:var(--text3);margin-top:-12px;}
-.lock-box{background:var(--s2);border:1px solid var(--border2);border-radius:var(--r);padding:28px 32px;width:340px;display:flex;flex-direction:column;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
-.lock-box label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
-.lock-box input{background:var(--s3);border:1px solid var(--border2);border-radius:var(--r2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:18px;padding:12px 16px;outline:none;letter-spacing:4px;text-align:center;width:100%;transition:border-color .2s;}
+/* LOCK */
+#lock-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:18px;background-image:radial-gradient(ellipse at 30% 40%,rgba(201,168,76,.07) 0%,transparent 60%),radial-gradient(ellipse at 70% 70%,rgba(76,175,80,.04) 0%,transparent 50%);}
+.lock-icon{font-size:52px;animation:lp 2s ease-in-out infinite;}
+@keyframes lp{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+.lock-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--gold);letter-spacing:-1px;}
+.lock-sub{font-size:12px;color:var(--text3);margin-top:-10px;}
+.lock-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:28px 30px;width:320px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow);}
+.lock-box label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+.lock-box input{background:var(--surface3);border:1px solid var(--border2);border-radius:var(--radius2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:20px;padding:12px;outline:none;letter-spacing:6px;text-align:center;width:100%;transition:border-color .2s;}
 .lock-box input:focus{border-color:var(--gold);}
 .lock-error{font-size:12px;color:var(--red);text-align:center;display:none;}
-.btn-unlock{background:var(--gold);color:#1a1200;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;border:none;border-radius:var(--r2);padding:12px;cursor:pointer;width:100%;transition:all .2s;text-transform:uppercase;letter-spacing:1px;}
-.btn-unlock:hover{background:var(--gold2);transform:translateY(-1px);}
+.btn-unlock{background:var(--gold);color:#1a1200;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;border:none;border-radius:var(--radius2);padding:12px;cursor:pointer;width:100%;transition:all .2s;text-transform:uppercase;letter-spacing:1px;}
+.btn-unlock:hover{background:var(--gold2);}
 .lock-hint{font-size:11px;color:var(--text3);text-align:center;}
 
-/* MAIN */
-#app{display:none;flex-direction:column;height:100vh;}
+/* APP */
+#app{display:none;flex-direction:column;height:100vh;height:100dvh;}
 
-/* TOPBAR */
-#topbar{
-  background:linear-gradient(135deg,var(--s1) 0%,#141e14 100%);
-  border-bottom:1px solid var(--border);
-  padding:0 20px;
-  display:flex;align-items:center;gap:16px;
-  height:56px;flex-shrink:0;
-  box-shadow:0 2px 20px rgba(0,0,0,0.4);
-}
-.top-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold);white-space:nowrap;}
-.top-logo span{color:var(--green2);}
-.top-badge{background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.3);color:var(--gold);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;}
-.top-spacer{flex:1;}
-.drive-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);background:var(--s2);border:1px solid var(--border);padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.drive-pill:hover{border-color:var(--gold);color:var(--gold);}
-.drive-pill.ok{border-color:var(--green);color:var(--green);}
-.drive-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
-.btn-back{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--r2);cursor:pointer;text-decoration:none;transition:all .2s;}
-.btn-back:hover{border-color:var(--border2);color:var(--text);}
+/* HEADER */
+#header{background:linear-gradient(135deg,var(--surface) 0%,#141e14 100%);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 2px 16px rgba(0,0,0,.5);}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold);}
+.logo span{color:var(--green2);}
+.admin-badge{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;}
+.spacer{flex:1;}
+.pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);padding:5px 11px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.pill:hover{border-color:var(--gold);color:var(--gold);}
+.pill.ok{border-color:var(--green);color:var(--green);}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
 
-/* LAYOUT */
-#layout{display:flex;flex:1;overflow:hidden;}
+/* TABS */
+#tabs{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+#tabs::-webkit-scrollbar{display:none;}
+.tab{padding:10px 15px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.5px;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* SIDEBAR */
-#sidebar{
-  width:220px;flex-shrink:0;
-  background:var(--s1);border-right:1px solid var(--border);
-  overflow-y:auto;padding:16px 0;
-}
-.nav-section{padding:0 12px 6px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-top:14px;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;border-left:3px solid transparent;margin:1px 0;}
-.nav-item:hover{color:var(--text);background:var(--s2);}
-.nav-item.active{color:var(--gold);background:rgba(212,168,67,0.08);border-left-color:var(--gold);}
-.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
-
-/* MAIN CONTENT */
-#main{flex:1;overflow-y:auto;padding:24px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
-.section{display:none;}
-.section.active{display:block;}
-
-/* SAVE BAR */
-#save-bar{
-  background:var(--s2);border-top:1px solid var(--border);
-  padding:12px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0;
-}
-.save-status{font-size:12px;color:var(--text3);flex:1;}
-.save-status.saved{color:var(--green);}
-.save-status.dirty{color:var(--gold);}
+/* CONTENT */
+#content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:16px;}
+#content::-webkit-scrollbar{width:4px;}
+#content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.page{display:none;}
+.page.active{display:block;}
 
 /* CARDS */
-.card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;}
-.card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.card-desc{font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow2);}
+.card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.card-desc{font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6;}
 
-/* FORM */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .form-grid .full{grid-column:1/-1;}
-.field{display:flex;flex-direction:column;gap:5px;}
-.field label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
-input,select,textarea{background:var(--s3);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+.field{display:flex;flex-direction:column;gap:4px;}
+label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+input,select,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius2);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
 input:focus,select:focus,textarea:focus{border-color:var(--gold);}
 input::placeholder{color:var(--text3);}
-select option{background:var(--s2);}
-textarea{resize:vertical;min-height:70px;}
+select option{background:var(--surface2);}
 .input-unit{position:relative;}
 .input-unit input{padding-right:52px;}
-.unit-lbl{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--gold);font-family:'JetBrains Mono',monospace;}
+.unit-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--gold);font-family:'JetBrains Mono',monospace;}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:var(--r2);border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s;text-transform:uppercase;letter-spacing:.5px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--radius2);border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s;text-transform:uppercase;letter-spacing:.5px;}
 .btn-primary{background:var(--gold);color:#1a1200;}
 .btn-primary:hover{background:var(--gold2);transform:translateY(-1px);}
 .btn-success{background:var(--green);color:#fff;}
@@ -132,86 +90,84 @@ textarea{resize:vertical;min-height:70px;}
 .btn-danger{background:var(--red);color:#fff;}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
 .btn-ghost:hover{border-color:var(--border2);color:var(--text);}
-.btn-sm{padding:5px 12px;font-size:11px;}
+.btn-sm{padding:6px 12px;font-size:11px;}
 .btn:active{transform:scale(.97);}
 .btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
 
-/* TAGS / CHIPS */
-.chips{display:flex;flex-wrap:wrap;gap:6px;min-height:32px;margin-bottom:8px;}
-.chip{display:inline-flex;align-items:center;gap:5px;background:var(--s3);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text2);}
-.chip-del{cursor:pointer;color:var(--red);font-size:14px;line-height:1;margin-left:2px;}
-.chip-del:hover{color:#ff8a8a;}
-.chip-add-row{display:flex;gap:8px;}
-.chip-add-row input{flex:1;}
+/* REF LIST */
+.ref-list{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;margin-bottom:10px;}
+.ref-chip{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text2);margin:2px;}
+.ref-chip-x{cursor:pointer;color:var(--red);font-size:14px;line-height:1;margin-left:2px;}
+.ref-chip-x:hover{color:var(--red2);}
 
-/* PRIX TABLE */
-.prix-history{margin-top:12px;}
-.prix-row{background:var(--s3);border:1px solid var(--border);border-radius:var(--r2);padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
-.prix-row.current{border-color:var(--green);background:rgba(76,175,80,0.06);}
-.prix-date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);min-width:90px;}
-.prix-vals{flex:1;display:flex;gap:20px;flex-wrap:wrap;}
-.prix-val{font-size:12px;color:var(--text2);}
-.prix-val strong{color:var(--text);}
-.prix-badge{font-size:10px;font-weight:700;background:rgba(76,175,80,0.2);color:var(--green2);border:1px solid rgba(76,175,80,0.3);padding:2px 8px;border-radius:12px;}
-.prix-del{cursor:pointer;color:var(--text3);font-size:16px;transition:color .15s;}
-.prix-del:hover{color:var(--red);}
-
-/* OPERATEURS / CHAUFFEURS */
-.person-card{background:var(--s3);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;}
+/* PERSON */
+.person-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius2);padding:9px 12px;margin-bottom:7px;}
 .person-main{font-size:13px;font-weight:600;color:var(--text);}
 .person-sub{font-size:11px;color:var(--text3);margin-top:2px;}
-.person-del{cursor:pointer;color:var(--text3);font-size:18px;transition:color .15s;flex-shrink:0;}
-.person-del:hover{color:var(--red);}
+.person-x{cursor:pointer;color:var(--text3);font-size:18px;line-height:1;flex-shrink:0;}
+.person-x:hover{color:var(--red);}
 
-/* STATS MINI */
-.mini-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
-.mini-stat{background:var(--s3);border:1px solid var(--border);border-radius:var(--r2);padding:12px;text-align:center;}
-.mini-stat .msv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600;color:var(--gold);}
-.mini-stat .msl{font-size:11px;color:var(--text3);margin-top:3px;}
+/* PRIX */
+.prix-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius2);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.prix-row.current{border-color:var(--green);background:rgba(76,175,80,.06);}
+.prix-date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);min-width:90px;}
+.prix-vals{flex:1;display:flex;gap:16px;flex-wrap:wrap;}
+.prix-val{font-size:12px;color:var(--text2);}
+.prix-val strong{color:var(--text);}
+.prix-badge{font-size:10px;font-weight:700;background:rgba(76,175,80,.2);color:var(--green2);border:1px solid rgba(76,175,80,.3);padding:2px 8px;border-radius:12px;}
+.prix-x{cursor:pointer;color:var(--text3);font-size:18px;transition:color .15s;}
+.prix-x:hover{color:var(--red);}
 
-/* TOAST */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s3);border:1px solid var(--border2);color:var(--text);padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;z-index:1000;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 24px rgba(0,0,0,.5);white-space:nowrap;}
-#toast.show{transform:translateX(-50%) translateY(0);}
-#toast.ok{border-color:var(--green);color:var(--green2);}
-#toast.err{border-color:var(--red);color:var(--red);}
+/* INFO ROW */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.ir-key{font-size:12px;color:var(--text3);}
+.ir-val{font-size:12px;color:var(--text);font-family:'JetBrains Mono',monospace;}
 
-/* DRIVE AUTH OVERLAY */
-#drive-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:500;}
-#drive-overlay.open{display:flex;}
-.drive-box{background:var(--s2);border:1px solid var(--border2);border-radius:var(--r);padding:32px;width:360px;text-align:center;}
-.drive-box h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:8px;}
-.drive-box p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+/* ALERTS */
+.alert{padding:10px 14px;border-radius:var(--radius2);font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.alert-info{background:rgba(66,165,245,.1);border:1px solid rgba(66,165,245,.3);color:var(--blue);}
+.alert-warn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);}
+.alert-success{background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);color:var(--green2);}
+
+/* PRIX PREVIEW */
+#prix-preview{display:none;margin:10px 0;padding:10px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:var(--radius2);font-size:12px;color:var(--gold);}
+
+/* DRIVE OVERLAY */
+#drive-auth-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0a0f0a 0%,#111811 100%);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:500;gap:16px;padding:24px;text-align:center;}
+#drive-auth-overlay.open{display:flex;}
+.drive-auth-logo{font-size:48px;}
+.drive-auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--gold);}
+.drive-auth-sub{font-size:13px;color:var(--text2);max-width:360px;line-height:1.7;}
 .google-btn{display:inline-flex;align-items:center;gap:12px;background:#fff;color:#3c4043;border:none;border-radius:8px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:all .2s;}
 .google-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,.4);transform:translateY(-1px);}
-.drive-skip{margin-top:16px;font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline;}
-.drive-skip:hover{color:var(--text2);}
+.skip-link{font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline;}
+.skip-link:hover{color:var(--text2);}
 
-/* PREVIEW PRIX */
-.prix-preview{background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.25);border-radius:var(--r2);padding:10px 14px;font-size:12px;color:var(--gold);margin-top:8px;display:none;}
+/* FILE PICKER */
+#file-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:400;padding:16px;}
+#file-picker-overlay.open{display:flex;}
+.fp-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:28px;width:340px;text-align:center;}
+.fp-icon{font-size:40px;margin-bottom:10px;}
+.fp-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.fp-desc{font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.6;}
 
-/* PAGE TITLE */
-.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
-.page-sub{font-size:13px;color:var(--text3);margin-bottom:20px;}
-.divider{height:1px;background:var(--border);margin:16px 0;}
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface3,#263226);border:1px solid var(--border2);color:var(--text);padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;z-index:1000;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow);white-space:nowrap;max-width:90vw;text-align:center;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.success{border-color:var(--green);color:var(--green2);}
+#toast.error{border-color:var(--red);color:var(--red2);}
 
-/* ALERT */
-.alert{padding:10px 14px;border-radius:var(--r2);font-size:12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;line-height:1.5;}
-.alert-info{background:rgba(91,163,232,0.1);border:1px solid rgba(91,163,232,0.3);color:var(--blue);}
-.alert-warn{background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.3);color:var(--gold);}
-
-/* RESPONSIVE */
-@media(max-width:640px){
-  #sidebar{display:none;}
+@media(max-width:480px){
   .form-grid{grid-template-columns:1fr;}
   .form-grid .full{grid-column:1;}
-  #main{padding:16px;}
-  .lock-box{width:92vw;padding:22px;}
+  .lock-box{width:92vw;padding:20px;}
 }
 </style>
 </head>
 <body>
 
-<!-- LOCK SCREEN -->
+<!-- ═══ LOCK SCREEN ═══ -->
 <div id="lock-screen">
   <div class="lock-icon">🔐</div>
   <div class="lock-title">Administration</div>
@@ -223,773 +179,525 @@ textarea{resize:vertical;min-height:70px;}
     </div>
     <div id="lock-error" class="lock-error">❌ Mot de passe incorrect</div>
     <button class="btn-unlock" onclick="tryUnlock()">Accéder →</button>
-    <div class="lock-hint">Mot de passe par défaut : <strong style="color:var(--gold);font-family:'JetBrains Mono',monospace;">1234</strong></div>
+    <div class="lock-hint">Par défaut : <strong style="color:var(--gold);font-family:'JetBrains Mono',monospace;">1234</strong></div>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- ═══ APP ═══ -->
 <div id="app">
-  <!-- TOPBAR -->
-  <div id="topbar">
-    <div class="top-logo">⚙️ Pont<span>Bascule</span></div>
-    <div class="top-badge">Admin</div>
-    <div class="top-spacer"></div>
-    <div class="drive-pill" id="drive-pill" onclick="showDriveOverlay()">
-      <span class="drive-dot"></span>
-      <span id="drive-pill-text">Drive</span>
+
+  <div id="header">
+    <div class="logo">🌾 Pont<span>Bascule</span></div>
+    <div class="admin-badge">Admin</div>
+    <div class="spacer"></div>
+    <div class="pill" id="drive-pill" onclick="showDriveAuthOverlay()">
+      <span class="pill-dot"></span><span id="drive-pill-txt">Drive</span>
+    </div>
+    <div class="pill" id="file-pill" onclick="openFilePicker()" style="margin-left:4px;">
+      <span class="pill-dot" id="file-dot" style="background:var(--text3);"></span><span id="file-pill-txt">Fichier</span>
     </div>
   </div>
 
-  <!-- LAYOUT -->
-  <div id="layout">
-    <!-- SIDEBAR -->
-    <nav id="sidebar">
-      <div class="nav-section">Paramètres</div>
-      <div class="nav-item active" data-sec="config" onclick="showSec('config')">
-        <span class="nav-icon">⚙️</span> Configuration
-      </div>
-      <div class="nav-item" data-sec="prix" onclick="showSec('prix')">
-        <span class="nav-icon">💱</span> Prix
-      </div>
-      <div class="nav-section">Référentiels</div>
-      <div class="nav-item" data-sec="produits" onclick="showSec('produits')">
-        <span class="nav-icon">🌾</span> Produits
-      </div>
-      <div class="nav-item" data-sec="vehicules" onclick="showSec('vehicules')">
-        <span class="nav-icon">🚚</span> Véhicules
-      </div>
-      <div class="nav-item" data-sec="chauffeurs" onclick="showSec('chauffeurs')">
-        <span class="nav-icon">🧑‍✈️</span> Chauffeurs
-      </div>
-      <div class="nav-item" data-sec="fournisseurs" onclick="showSec('fournisseurs')">
-        <span class="nav-icon">🏭</span> Fournisseurs
-      </div>
-      <div class="nav-item" data-sec="clients" onclick="showSec('clients')">
-        <span class="nav-icon">👤</span> Clients
-      </div>
-      <div class="nav-section">Accès</div>
-      <div class="nav-item" data-sec="operateurs" onclick="showSec('operateurs')">
-        <span class="nav-icon">👷</span> Opérateurs
-      </div>
-      <div class="nav-item" data-sec="securite" onclick="showSec('securite')">
-        <span class="nav-icon">🔐</span> Sécurité
-      </div>
-    </nav>
+  <div id="tabs">
+    <div class="tab active" onclick="showPage('config')" data-page="config">⚙️ Config</div>
+    <div class="tab" onclick="showPage('prix')" data-page="prix">💱 Prix</div>
+    <div class="tab" onclick="showPage('operateurs')" data-page="operateurs">👷 Opérateurs</div>
+    <div class="tab" onclick="showPage('produits')" data-page="produits">🌾 Produits</div>
+    <div class="tab" onclick="showPage('vehicules')" data-page="vehicules">🚚 Véhicules</div>
+    <div class="tab" onclick="showPage('chauffeurs')" data-page="chauffeurs">🧑‍✈️ Chauffeurs</div>
+    <div class="tab" onclick="showPage('fournisseurs')" data-page="fournisseurs">🏭 Fournisseurs</div>
+    <div class="tab" onclick="showPage('clients')" data-page="clients">👤 Clients</div>
+    <div class="tab" onclick="showPage('securite')" data-page="securite">🔐 Sécurité</div>
+  </div>
 
-    <!-- MAIN -->
-    <div id="main">
+  <div id="content">
 
-      <!-- ===== CONFIG ===== -->
-      <div class="section active" id="sec-config">
-        <div class="page-title">⚙️ Configuration générale</div>
-        <div class="page-sub">Informations de votre pont bascule</div>
-        <div class="card">
-          <div class="card-title">🏢 Identité de la structure</div>
-          <div class="form-grid">
-            <div class="field full">
-              <label>Nom de la structure / Bascule</label>
-              <input type="text" id="cfg-nom" placeholder="Ex: Coopérative Agricole du Nord" oninput="markDirty()">
-            </div>
-            <div class="field full">
-              <label>Adresse</label>
-              <input type="text" id="cfg-adresse" placeholder="01 BP 456, Abidjan" oninput="markDirty()">
-            </div>
-            <div class="field">
-              <label>Téléphone</label>
-              <input type="text" id="cfg-tel" placeholder="+225 ..." oninput="markDirty()">
-            </div>
-            <div class="field">
-              <label>RCCM / IFU</label>
-              <input type="text" id="cfg-rccm" placeholder="CI-ABJ-..." oninput="markDirty()">
-            </div>
-          </div>
+    <!-- CONFIG -->
+    <div class="page active" id="page-config">
+      <div class="card">
+        <div class="card-title">⚙️ Configuration générale</div>
+        <div class="form-grid">
+          <div class="field full"><label>Nom de la structure / Bascule</label><input type="text" id="cfg-nom" placeholder="Ex: Coopérative Agricole du Nord"></div>
+          <div class="field full"><label>Adresse</label><input type="text" id="cfg-adresse" placeholder="Ex: 01 BP 456, Abidjan"></div>
+          <div class="field"><label>Téléphone</label><input type="text" id="cfg-tel" placeholder="+225 ..."></div>
+          <div class="field"><label>RCCM / IFU</label><input type="text" id="cfg-rccm" placeholder="CI-ABJ-..."></div>
+          <div class="field"><label>Campagne actuelle</label><input type="text" id="cfg-campagne" placeholder="Ex: 2024-2025"></div>
+          <div class="field"><label>Capacité bascule (kg)</label><div class="input-unit"><input type="number" id="cfg-capacite" placeholder="60000"><span class="unit-badge">kg</span></div></div>
+          <div class="field"><label>Unité d'affichage</label><select id="cfg-unite"><option value="kg">Kilogrammes (kg)</option><option value="t">Tonnes (t)</option></select></div>
+          <div class="field"><label>N° séquence départ</label><input type="number" id="cfg-seq" value="1"></div>
+          <div class="field full"><label>🔐 Mot de passe Opérateur / Propriétaire</label><input type="password" id="cfg-mdp-operateur" placeholder="(laisser vide = inchangé)"></div>
         </div>
-        <div class="card">
-          <div class="card-title">📅 Campagne & Bascule</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Campagne actuelle</label>
-              <input type="text" id="cfg-campagne" placeholder="2024-2025" oninput="markDirty()">
-            </div>
-            <div class="field">
-              <label>Capacité bascule (kg)</label>
-              <div class="input-unit">
-                <input type="number" id="cfg-capacite" placeholder="60000" oninput="markDirty()">
-                <span class="unit-lbl">kg</span>
-              </div>
-            </div>
-            <div class="field">
-              <label>Unité d'affichage</label>
-              <select id="cfg-unite" onchange="markDirty()">
-                <option value="kg">Kilogrammes (kg)</option>
-                <option value="t">Tonnes (t)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>N° séquence départ</label>
-              <input type="number" id="cfg-seq" value="1" oninput="markDirty()">
-            </div>
-          </div>
-        </div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="saveConfig()">💾 Sauvegarder config</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">☁️ Google Drive</div>
+        <div id="drive-config-info" style="margin-bottom:12px;"></div>
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="saveConfig()">💾 Sauvegarder la configuration</button>
+          <button class="btn btn-primary btn-sm" id="btn-drive-connect" onclick="showDriveAuthOverlay()">🔑 Connecter Drive</button>
+          <button class="btn btn-ghost btn-sm" id="btn-drive-sync" onclick="reloadFromDrive()" style="display:none;">🔄 Recharger depuis Drive</button>
+          <button class="btn btn-danger btn-sm" id="btn-drive-disconnect" onclick="disconnectDrive()" style="display:none;">🔌 Déconnecter</button>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--text3);line-height:1.6;">
+          💡 Admin ne modifie que config, référentiels et prix — les opérations et paiements ne sont jamais touchés.
         </div>
       </div>
 
-      <!-- ===== PRIX ===== -->
-      <div class="section" id="sec-prix">
-        <div class="page-title">💱 Prix du marché</div>
-        <div class="page-sub">Définissez les prix applicables par période</div>
-        <div class="card">
-          <div class="card-title">➕ Nouveau tarif</div>
-          <div class="card-desc">Les prix sont appliqués à partir de la date indiquée jusqu'au tarif suivant.</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Prix Graine (FCFA/kg)</label>
-              <div class="input-unit">
-                <input type="number" id="prix-graine" placeholder="Ex: 350" step="1" oninput="updatePrixPreview()">
-                <span class="unit-lbl">F</span>
-              </div>
-            </div>
-            <div class="field">
-              <label>Prix Transport (FCFA/kg)</label>
-              <div class="input-unit">
-                <input type="number" id="prix-transport" placeholder="Ex: 25" step="1" oninput="updatePrixPreview()">
-                <span class="unit-lbl">F</span>
-              </div>
-            </div>
-            <div class="field full">
-              <label>Valable à partir du</label>
-              <input type="date" id="prix-date">
-            </div>
-          </div>
-          <div class="prix-preview" id="prix-preview"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="savePrix()">💾 Enregistrer ce tarif</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">📜 Historique des tarifs</div>
-          <div id="prix-history-list">
-            <div style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">Aucun tarif enregistré</div>
-          </div>
-        </div>
+      <div class="card">
+        <div class="card-title">ℹ️ À propos</div>
+        <div class="info-row"><span class="ir-key">Application</span><span class="ir-val">PontBascule Admin v1.0</span></div>
+        <div class="info-row"><span class="ir-key">Stockage cloud</span><span class="ir-val">Google Drive (.ndjson)</span></div>
+        <div class="info-row"><span class="ir-key">Dossier Drive</span><span class="ir-val">📁 Pont bascule</span></div>
+        <div class="info-row"><span class="ir-key">Fichier</span><span class="ir-val">pont_bascule_data.ndjson</span></div>
+        <div class="info-row"><span class="ir-key">Compatible</span><span class="ir-val">Chrome / Edge / Mobile</span></div>
       </div>
-
-      <!-- ===== PRODUITS ===== -->
-      <div class="section" id="sec-produits">
-        <div class="page-title">🌾 Produits</div>
-        <div class="page-sub">Liste des produits pesés au pont</div>
-        <div class="card">
-          <div class="chips" id="chips-produits"></div>
-          <div class="chip-add-row">
-            <input type="text" id="new-produit" placeholder="Nom du produit..." onkeydown="if(event.key==='Enter')addChip('produits','new-produit')">
-            <button class="btn btn-primary btn-sm" onclick="addChip('produits','new-produit')">+ Ajouter</button>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== VÉHICULES ===== -->
-      <div class="section" id="sec-vehicules">
-        <div class="page-title">🚚 Véhicules</div>
-        <div class="page-sub">Immatriculations enregistrées</div>
-        <div class="card">
-          <div class="chips" id="chips-vehicules"></div>
-          <div class="chip-add-row">
-            <input type="text" id="new-vehicule" placeholder="AB-123-CD" style="font-family:'JetBrains Mono',monospace;" onkeydown="if(event.key==='Enter')addChip('vehicules','new-vehicule')">
-            <button class="btn btn-primary btn-sm" onclick="addChip('vehicules','new-vehicule')">+ Ajouter</button>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== CHAUFFEURS ===== -->
-      <div class="section" id="sec-chauffeurs">
-        <div class="page-title">🧑‍✈️ Chauffeurs</div>
-        <div class="page-sub">Chauffeurs associés aux véhicules</div>
-        <div class="card">
-          <div class="card-title">➕ Nouveau chauffeur</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Nom</label>
-              <input type="text" id="ch-nom" placeholder="Nom de famille">
-            </div>
-            <div class="field">
-              <label>Prénom</label>
-              <input type="text" id="ch-prenom" placeholder="Prénom">
-            </div>
-            <div class="field">
-              <label>Ville / Localité</label>
-              <input type="text" id="ch-ville" placeholder="Ex: Abidjan">
-            </div>
-            <div class="field">
-              <label>Véhicule associé</label>
-              <select id="ch-vehicule">
-                <option value="">— Aucun —</option>
-              </select>
-            </div>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="addChauffeur()">+ Ajouter le chauffeur</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">👥 Chauffeurs enregistrés</div>
-          <div id="chauffeurs-list">
-            <div style="color:var(--text3);font-size:13px;text-align:center;padding:12px;">Aucun chauffeur enregistré</div>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== FOURNISSEURS ===== -->
-      <div class="section" id="sec-fournisseurs">
-        <div class="page-title">🏭 Fournisseurs / Producteurs</div>
-        <div class="page-sub">Liste des fournisseurs de matières</div>
-        <div class="card">
-          <div class="chips" id="chips-fournisseurs"></div>
-          <div class="chip-add-row">
-            <input type="text" id="new-fournisseur" placeholder="Nom du fournisseur..." onkeydown="if(event.key==='Enter')addChip('fournisseurs','new-fournisseur')">
-            <button class="btn btn-primary btn-sm" onclick="addChip('fournisseurs','new-fournisseur')">+ Ajouter</button>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== CLIENTS ===== -->
-      <div class="section" id="sec-clients">
-        <div class="page-title">👤 Clients / Acheteurs</div>
-        <div class="page-sub">Liste des clients et acheteurs</div>
-        <div class="card">
-          <div class="chips" id="chips-clients"></div>
-          <div class="chip-add-row">
-            <input type="text" id="new-client" placeholder="Nom du client..." onkeydown="if(event.key==='Enter')addChip('clients','new-client')">
-            <button class="btn btn-primary btn-sm" onclick="addChip('clients','new-client')">+ Ajouter</button>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== OPERATEURS ===== -->
-      <div class="section" id="sec-operateurs">
-        <div class="page-title">👷 Opérateurs de pont</div>
-        <div class="page-sub">Agents autorisés à opérer la bascule</div>
-        <div class="card">
-          <div class="card-title">➕ Ajouter un opérateur</div>
-          <div class="chip-add-row">
-            <input type="text" id="new-operateur" placeholder="Nom complet de l'opérateur..." onkeydown="if(event.key==='Enter')addOperateur()">
-            <button class="btn btn-primary btn-sm" onclick="addOperateur()">+ Ajouter</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">👥 Opérateurs enregistrés</div>
-          <div id="operateurs-list">
-            <div style="color:var(--text3);font-size:13px;text-align:center;padding:12px;">Aucun opérateur enregistré</div>
-          </div>
-          <div class="divider"></div>
-          <div class="field">
-            <label>Opérateur actif (en service)</label>
-            <select id="operateur-actif" style="margin-top:4px;" onchange="markDirty()">
-              <option value="">— Aucun sélectionné —</option>
-            </select>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-success" onclick="saveOperateurs()">💾 Sauvegarder</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== SECURITE ===== -->
-      <div class="section" id="sec-securite">
-        <div class="page-title">🔐 Sécurité & Mots de passe</div>
-        <div class="page-sub">Gestion des accès à l'application</div>
-        <div class="card">
-          <div class="card-title">🔑 Mot de passe opérateur</div>
-          <div class="card-desc">Ce mot de passe est demandé pour annuler un paiement dans l'application principale.</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Nouveau mot de passe</label>
-              <input type="password" id="mdp-new" placeholder="Nouveau mot de passe" oninput="checkMdpMatch()">
-            </div>
-            <div class="field">
-              <label>Confirmer</label>
-              <input type="password" id="mdp-confirm" placeholder="Confirmer..." oninput="checkMdpMatch()">
-            </div>
-          </div>
-          <div id="mdp-match-msg" style="font-size:12px;margin-top:6px;"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="saveMdpOperateur()">🔐 Changer le mot de passe opérateur</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">🛡️ Mot de passe admin</div>
-          <div class="card-desc">Ce mot de passe protège l'accès à cette page d'administration.</div>
-          <div class="alert alert-warn">⚠️ Si vous perdez ce mot de passe, accédez d'abord à l'app principale pour le réinitialiser.</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Nouveau mot de passe admin</label>
-              <input type="password" id="admin-mdp-new" placeholder="Nouveau mot de passe admin" oninput="checkAdminMdpMatch()">
-            </div>
-            <div class="field">
-              <label>Confirmer</label>
-              <input type="password" id="admin-mdp-confirm" placeholder="Confirmer..." oninput="checkAdminMdpMatch()">
-            </div>
-          </div>
-          <div id="admin-mdp-match-msg" style="font-size:12px;margin-top:6px;"></div>
-          <div class="btn-row">
-            <button class="btn btn-danger" onclick="saveAdminMdp()">🛡️ Changer le mot de passe admin</button>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /main -->
-  </div><!-- /layout -->
-
-  <!-- SAVE BAR -->
-  <div id="save-bar">
-    <div class="save-status" id="save-status">Chargement...</div>
-    <button class="btn btn-ghost btn-sm" onclick="reloadData()">🔄 Recharger</button>
-    <div class="drive-pill" id="drive-pill2" onclick="showDriveOverlay()" style="font-size:11px;">
-      <span class="drive-dot" id="drive-dot2"></span>
-      <span id="drive-text2">Drive</span>
     </div>
+
+    <!-- PRIX -->
+    <div class="page" id="page-prix">
+      <div class="card">
+        <div class="card-title">💱 Prix du Jour / Mois</div>
+        <div class="card-desc">Définissez les prix applicables. Ils seront utilisés automatiquement dans la page Scanner de l'app principale. L'historique est conservé avec les numéros de tickets associés.</div>
+        <div class="form-grid">
+          <div class="field"><label>Prix Graine (FCFA/kg)</label><div class="input-unit"><input type="number" id="cfg-prix-graine" placeholder="Ex: 350" step="1" oninput="updatePrixPreview()"><span class="unit-badge">FCFA</span></div></div>
+          <div class="field"><label>Prix Transport (FCFA/kg)</label><div class="input-unit"><input type="number" id="cfg-prix-transport" placeholder="Ex: 25" step="1" oninput="updatePrixPreview()"><span class="unit-badge">FCFA</span></div></div>
+          <div class="field full"><label>Valable à partir du</label><input type="date" id="cfg-prix-date"></div>
+        </div>
+        <div id="prix-preview"></div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="savePrix()">💾 Enregistrer les prix</button></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📜 Historique des Prix</div>
+        <div id="historique-prix-list"><div style="color:var(--text3);font-size:12px;text-align:center;padding:12px;">Aucun historique disponible</div></div>
+      </div>
+    </div>
+
+    <!-- OPÉRATEURS -->
+    <div class="page" id="page-operateurs">
+      <div class="card">
+        <div class="card-title">👷 Opérateurs / Agents du Pont</div>
+        <div class="card-desc">Ces noms apparaîtront sur les tickets et dans la signature.</div>
+        <div id="list-operateurs" style="margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="new-operateur-nom" placeholder="Nom complet opérateur" style="flex:1;" onkeydown="if(event.key==='Enter')addOperateur()">
+          <button class="btn btn-primary btn-sm" onclick="addOperateur()">+ Ajouter</button>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Opérateur actif (en service)</label>
+          <select id="cfg-operateur-actif" style="margin-top:4px;"><option value="">— Aucun sélectionné —</option></select>
+        </div>
+        <div class="btn-row"><button class="btn btn-success" onclick="saveOperateurs()">💾 Sauvegarder les opérateurs</button></div>
+      </div>
+    </div>
+
+    <!-- PRODUITS -->
+    <div class="page" id="page-produits">
+      <div class="card">
+        <div class="card-title">🌾 Produits / Graines</div>
+        <div id="list-produits" style="margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="new-produit" placeholder="Maïs, Soja, Palmier..." style="flex:1;" onkeydown="if(event.key==='Enter')addRef('produits','new-produit')">
+          <button class="btn btn-primary btn-sm" onclick="addRef('produits','new-produit')">+ Ajouter</button>
+        </div>
+        <div class="btn-row"><button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button></div>
+      </div>
+    </div>
+
+    <!-- VÉHICULES -->
+    <div class="page" id="page-vehicules">
+      <div class="card">
+        <div class="card-title">🚚 Véhicules</div>
+        <div id="list-vehicules" style="margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="new-vehicule" placeholder="AB-123-CD" style="flex:1;font-family:'JetBrains Mono',monospace;" onkeydown="if(event.key==='Enter')addRef('vehicules','new-vehicule')">
+          <button class="btn btn-primary btn-sm" onclick="addRef('vehicules','new-vehicule')">+ Ajouter</button>
+        </div>
+        <div class="btn-row"><button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button></div>
+      </div>
+    </div>
+
+    <!-- CHAUFFEURS -->
+    <div class="page" id="page-chauffeurs">
+      <div class="card">
+        <div class="card-title">🧑‍✈️ Chauffeurs</div>
+        <div id="list-chauffeurs" style="margin-bottom:10px;"></div>
+        <div class="card-desc">Ajoutez un chauffeur avec son véhicule associé :</div>
+        <div class="form-grid" style="margin-bottom:8px;">
+          <div class="field"><label>Nom</label><input type="text" id="new-chauffeur-nom" placeholder="KONÉ"></div>
+          <div class="field"><label>Prénom</label><input type="text" id="new-chauffeur-prenom" placeholder="Mamadou"></div>
+          <div class="field"><label>Ville / Village</label><input type="text" id="new-chauffeur-ville" placeholder="Korhogo..."></div>
+          <div class="field"><label>Véhicule associé (immat.)</label><select id="new-chauffeur-vehicule"><option value="">— Aucun —</option></select></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addChauffeur()">+ Ajouter chauffeur</button>
+        <div class="btn-row"><button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button></div>
+      </div>
+    </div>
+
+    <!-- FOURNISSEURS -->
+    <div class="page" id="page-fournisseurs">
+      <div class="card">
+        <div class="card-title">🏭 Fournisseurs / Producteurs</div>
+        <div id="list-fournisseurs" style="margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="new-fournisseur" placeholder="Nom du fournisseur..." style="flex:1;" onkeydown="if(event.key==='Enter')addRef('fournisseurs','new-fournisseur')">
+          <button class="btn btn-primary btn-sm" onclick="addRef('fournisseurs','new-fournisseur')">+ Ajouter</button>
+        </div>
+        <div class="btn-row"><button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button></div>
+      </div>
+    </div>
+
+    <!-- CLIENTS -->
+    <div class="page" id="page-clients">
+      <div class="card">
+        <div class="card-title">👤 Clients / Acheteurs</div>
+        <div id="list-clients" style="margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="new-client" placeholder="Nom du client..." style="flex:1;" onkeydown="if(event.key==='Enter')addRef('clients','new-client')">
+          <button class="btn btn-primary btn-sm" onclick="addRef('clients','new-client')">+ Ajouter</button>
+        </div>
+        <div class="btn-row"><button class="btn btn-success" onclick="saveRefs()">💾 Sauvegarder</button></div>
+      </div>
+    </div>
+
+    <!-- SÉCURITÉ -->
+    <div class="page" id="page-securite">
+      <div class="card">
+        <div class="card-title">🔑 Mot de passe Opérateur</div>
+        <div class="card-desc">Utilisé pour annuler un paiement dans l'application principale.</div>
+        <div class="form-grid">
+          <div class="field"><label>Nouveau mot de passe</label><input type="password" id="mdp-new" placeholder="Nouveau" oninput="checkMdpMatch()"></div>
+          <div class="field"><label>Confirmer</label><input type="password" id="mdp-confirm" placeholder="Confirmer" oninput="checkMdpMatch()"></div>
+        </div>
+        <div id="mdp-match-msg" style="font-size:12px;margin-top:6px;"></div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="saveMdpOperateur()">🔐 Changer mot de passe opérateur</button></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🛡️ Mot de passe Admin</div>
+        <div class="card-desc">Protège l'accès à cette page d'administration.</div>
+        <div class="alert alert-warn">⚠️ Notez bien ce mot de passe. En cas d'oubli, modifiez la valeur <strong>mdpAdmin</strong> directement dans le fichier .ndjson.</div>
+        <div class="form-grid">
+          <div class="field"><label>Nouveau mot de passe admin</label><input type="password" id="admin-mdp-new" placeholder="Nouveau" oninput="checkAdminMdpMatch()"></div>
+          <div class="field"><label>Confirmer</label><input type="password" id="admin-mdp-confirm" placeholder="Confirmer" oninput="checkAdminMdpMatch()"></div>
+        </div>
+        <div id="admin-mdp-match-msg" style="font-size:12px;margin-top:6px;"></div>
+        <div class="btn-row"><button class="btn btn-danger" onclick="saveAdminMdp()">🛡️ Changer mot de passe admin</button></div>
+      </div>
+    </div>
+
   </div>
-</div><!-- /app -->
+</div>
 
 <!-- DRIVE OVERLAY -->
-<div id="drive-overlay">
-  <div class="drive-box">
-    <div style="font-size:36px;margin-bottom:12px;">☁️</div>
-    <h3>Connexion Google Drive</h3>
-    <p>Connectez Drive pour synchroniser la configuration sur tous vos appareils.</p>
-    <button class="google-btn" onclick="signInWithGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Se connecter avec Google
-    </button>
-    <div id="drive-connect-status" style="margin-top:12px;font-size:12px;color:var(--text3);"></div>
-    <div class="drive-skip" onclick="closeDriveOverlay()">Continuer sans Drive</div>
+<div id="drive-auth-overlay" class="open">
+  <div class="drive-auth-logo">🌾</div>
+  <div class="drive-auth-title">Pont Bascule Admin</div>
+  <div class="drive-auth-sub">Connectez Google Drive pour lire et modifier la configuration.<br><span style="font-size:11px;color:var(--text3);">Seuls config, référentiels et prix seront modifiés — jamais les opérations.</span></div>
+  <button class="google-btn" onclick="signInWithGoogle()">
+    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    Se connecter avec Google
+  </button>
+  <div id="drive-auth-loading" style="display:none;color:var(--text2);font-size:13px;">⏳ Connexion en cours...</div>
+  <div id="drive-auth-error" style="display:none;color:var(--red);font-size:12px;margin-top:4px;max-width:340px;"></div>
+  <div class="skip-link" onclick="skipDrive()">Continuer sans Drive (fichier local)</div>
+</div>
+
+<!-- FILE PICKER -->
+<div id="file-picker-overlay">
+  <div class="fp-box">
+    <div class="fp-icon">📁</div>
+    <div class="fp-title">Fichier de données</div>
+    <div class="fp-desc">Ouvrez le fichier <strong>pont_bascule_data.ndjson</strong> pour lire et modifier la configuration.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-primary" onclick="pickFile()">📂 Ouvrir fichier existant</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeFilePicker()">Annuler</button>
+    </div>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// ================================================================
-// CONSTANTS (doivent correspondre à index.html)
-// ================================================================
+// ════════════════════════════════════════════
+// CONSTANTES — identiques à index.html
+// ════════════════════════════════════════════
 const GOOGLE_CLIENT_ID = '370696807183-ojaufvcgsegt8if5d75nj60qf0eu718a.apps.googleusercontent.com';
 const DRIVE_SCOPES = 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file';
 const DRIVE_FILE_NAME = 'pont_bascule_data.ndjson';
 const DRIVE_FOLDER_NAME = 'Pont bascule';
 
-// ================================================================
-// STATE
-// ================================================================
+// ════════════════════════════════════════════
+// ÉTAT GLOBAL
+// ════════════════════════════════════════════
+let googleTokenClient = null;
 let driveAccessToken = null;
 let driveFileId = null;
 let driveFolderId = null;
 let driveConnected = false;
 let gapiReady = false;
 let fileHandle = null;
-let isDirty = false;
 
-let config = {
-  nom:'Pont Bascule', adresse:'', tel:'', rccm:'',
-  campagne: new Date().getFullYear().toString(),
-  capacite:60000, unite:'kg', seq:1, operateurActif:'', mdpOperateur:'1234', mdpAdmin:'1234'
-};
+// Lignes brutes préservées (opérations + paiements)
+let rawLines = [];
+
+// Données modifiables dans admin
+let config = { nom:'Pont Bascule', adresse:'', tel:'', rccm:'', campagne:new Date().getFullYear().toString(), capacite:60000, unite:'kg', seq:1, operateurActif:'', mdpOperateur:'1234', mdpAdmin:'1234' };
 let refs = { produits:['Palmier à huile'], clients:[], fournisseurs:[], vehicules:[], chauffeurs:[], operateurs:[] };
 let historiquePrix = [];
-let paiementsData = {};
-let allOperations = [];
+let allOperations = []; // pour compter seulement
 
-// ================================================================
-// LOCK SCREEN
-// ================================================================
-function tryUnlock() {
-  const val = document.getElementById('lock-input').value;
-  // Vérifier d'abord le cache sessionStorage, puis la config en mémoire
-  let mdpAdmin = '1234';
-  const cached = sessionStorage.getItem('pb_config_cache');
-  if(cached) { try{ mdpAdmin = JSON.parse(cached).mdpAdmin || '1234'; }catch(e){} }
-  else mdpAdmin = config.mdpAdmin || '1234';
-
-  if(val === mdpAdmin) {
-    document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    loadAllData();
-  } else {
-    document.getElementById('lock-error').style.display = 'block';
-    document.getElementById('lock-input').value = '';
-    document.getElementById('lock-input').focus();
-    setTimeout(()=> document.getElementById('lock-error').style.display='none', 2500);
-  }
-}
-
-// On charge d'abord config depuis sessionStorage pour avoir le bon mdpAdmin
+// ════════════════════════════════════════════
+// INIT & LOCK
+// ════════════════════════════════════════════
 window.onload = () => {
-  // Tenter récupération token Drive
-  const savedToken = sessionStorage.getItem('drive_token');
-  if(savedToken) {
-    driveAccessToken = savedToken;
-    driveConnected = true;
-    driveFileId = sessionStorage.getItem('drive_file_id') || null;
-    driveFolderId = sessionStorage.getItem('drive_folder_id') || null;
-    updateDrivePill();
-  }
-  // Pré-charger config pour avoir le bon mdpAdmin
-  const cachedConfig = sessionStorage.getItem('pb_config_cache');
-  if(cachedConfig) {
-    try{ config = {...config, ...JSON.parse(cachedConfig)}; }catch(e){}
-  }
+  const tok = sessionStorage.getItem('drive_token');
+  if(tok) { driveAccessToken=tok; driveConnected=true; driveFileId=sessionStorage.getItem('drive_file_id')||null; driveFolderId=sessionStorage.getItem('drive_folder_id')||null; }
+  const cache = sessionStorage.getItem('pb_config_cache');
+  if(cache) { try{ config={...config,...JSON.parse(cache)}; }catch(e){} }
   document.getElementById('lock-input').focus();
 };
 
-// ================================================================
+function tryUnlock() {
+  const val = document.getElementById('lock-input').value;
+  let mdp = '1234';
+  const cache = sessionStorage.getItem('pb_config_cache');
+  if(cache) { try{ mdp=JSON.parse(cache).mdpAdmin||'1234'; }catch(e){} } else mdp=config.mdpAdmin||'1234';
+  if(val === mdp) {
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    if(driveConnected && driveFileId) { document.getElementById('drive-auth-overlay').classList.remove('open'); loadFromDrive(); }
+  } else {
+    document.getElementById('lock-error').style.display='block';
+    document.getElementById('lock-input').value='';
+    document.getElementById('lock-input').focus();
+    setTimeout(()=>document.getElementById('lock-error').style.display='none',2500);
+  }
+}
+
+// ════════════════════════════════════════════
 // NAVIGATION
-// ================================================================
-function showSec(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('sec-'+name).classList.add('active');
-  document.querySelector(`[data-sec="${name}"]`).classList.add('active');
+// ════════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelector(`[data-page="${name}"]`).classList.add('active');
+  if(name==='chauffeurs') populateVehiculeSelect();
+  if(name==='operateurs') renderOperateursList();
 }
 
-// ================================================================
-// LOAD ALL DATA
-// ================================================================
-async function loadAllData() {
-  setSaveStatus('Chargement des données...', '');
-  // 1. Drive
-  if(driveConnected && driveFileId) {
-    await loadFromDrive();
-    return;
-  }
-  // 2. File local
-  if(fileHandle) {
-    await loadFileData();
-    return;
-  }
-  // 3. Proposer connexion
-  setSaveStatus('⚠️ Aucune source de données. Connectez Drive ou ouvrez un fichier.', 'dirty');
-  showDriveOverlay();
-}
-
-async function reloadData() {
-  await loadAllData();
-  showToast('🔄 Données rechargées', 'ok');
-}
-
-// ================================================================
-// GOOGLE DRIVE
-// ================================================================
-function gapiLoaded() {
-  gapi.load('client', async () => {
-    await gapi.client.init({});
-    gapiReady = true;
-    if(driveAccessToken) gapi.client.setToken({ access_token: driveAccessToken });
-  });
-}
-
-function showDriveOverlay() { document.getElementById('drive-overlay').classList.add('open'); }
-function closeDriveOverlay() { document.getElementById('drive-overlay').classList.remove('open'); }
+// ════════════════════════════════════════════
+// GOOGLE DRIVE — AUTH
+// ════════════════════════════════════════════
+function gapiLoaded() { gapi.load('client',async()=>{ await gapi.client.init({}); gapiReady=true; if(driveAccessToken) gapi.client.setToken({access_token:driveAccessToken}); }); }
+function showDriveAuthOverlay() { document.getElementById('drive-auth-loading').style.display='none'; document.getElementById('drive-auth-error').style.display='none'; document.getElementById('drive-auth-overlay').classList.add('open'); }
+function skipDrive() { document.getElementById('drive-auth-overlay').classList.remove('open'); showToast('Ouvrez un fichier .ndjson local',''); }
 
 function signInWithGoogle() {
-  document.getElementById('drive-connect-status').textContent = '⏳ Connexion en cours...';
-  if(typeof google === 'undefined' || !google.accounts) {
-    const s = document.createElement('script');
-    s.src = 'https://accounts.google.com/gsi/client';
-    s.onload = () => setTimeout(signInWithGoogle, 500);
-    document.head.appendChild(s);
-    return;
-  }
+  document.getElementById('drive-auth-loading').style.display='block';
+  document.getElementById('drive-auth-error').style.display='none';
+  if(typeof google==='undefined'||!google.accounts) { const s=document.createElement('script'); s.src='https://accounts.google.com/gsi/client'; s.onload=()=>setTimeout(signInWithGoogle,500); document.head.appendChild(s); return; }
   try {
-    const tc = google.accounts.oauth2.initTokenClient({
-      client_id: GOOGLE_CLIENT_ID,
-      scope: DRIVE_SCOPES,
-      callback: async (r) => {
-        if(r.error) { document.getElementById('drive-connect-status').textContent = '❌ ' + r.error; return; }
-        driveAccessToken = r.access_token;
-        sessionStorage.setItem('drive_token', driveAccessToken);
-        if(!gapiReady) await new Promise(res => gapi.load('client', async ()=>{ await gapi.client.init({}); gapiReady=true; res(); }));
-        gapi.client.setToken({ access_token: driveAccessToken });
-        driveConnected = true;
-        try {
-          const ur = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+driveAccessToken}});
-          const u = await ur.json();
-          sessionStorage.setItem('drive_email', u.email||'');
-        } catch(e){}
-        updateDrivePill();
-        closeDriveOverlay();
-        showToast('✅ Connecté à Google Drive', 'ok');
+    googleTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID, scope: DRIVE_SCOPES,
+      callback: async(r) => {
+        if(r.error) { showDriveErr('Erreur: '+r.error); return; }
+        driveAccessToken=r.access_token; sessionStorage.setItem('drive_token',driveAccessToken);
+        if(!gapiReady) await new Promise(res=>gapi.load('client',async()=>{await gapi.client.init({});gapiReady=true;res();}));
+        gapi.client.setToken({access_token:driveAccessToken}); driveConnected=true;
+        try{ const u=await(await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+driveAccessToken}})).json(); sessionStorage.setItem('drive_email',u.email||''); }catch(e){}
+        updateDriveUI(); document.getElementById('drive-auth-overlay').classList.remove('open');
+        showToast('✅ Connecté à Google Drive !','success');
         await initDriveFile();
       },
-      error_callback: () => { document.getElementById('drive-connect-status').textContent = '❌ Connexion annulée'; }
+      error_callback:()=>showDriveErr('Connexion annulée.')
     });
-    tc.requestAccessToken({ prompt:'' });
-  } catch(e) {
-    document.getElementById('drive-connect-status').textContent = '❌ Erreur: ' + e.message;
-  }
+    googleTokenClient.requestAccessToken({prompt:''});
+  } catch(e) { showDriveErr('Google Sign-In non disponible.'); }
 }
+function showDriveErr(msg) { document.getElementById('drive-auth-loading').style.display='none'; const e=document.getElementById('drive-auth-error'); e.style.display='block'; e.textContent='⚠️ '+msg; }
+function disconnectDrive() { driveAccessToken=null;driveFileId=null;driveFolderId=null;driveConnected=false; ['drive_token','drive_email','drive_file_id','drive_folder_id'].forEach(k=>sessionStorage.removeItem(k)); updateDriveUI(); showToast('🔌 Drive déconnecté',''); }
+async function reloadFromDrive() { await loadFromDrive(); showToast('🔄 Rechargé depuis Drive','success'); }
 
-async function driveReq(method, url, body, extraHeaders={}) {
-  const headers = { Authorization: 'Bearer ' + driveAccessToken, ...extraHeaders };
-  const opts = { method, headers };
-  if(body !== undefined) opts.body = body;
-  try {
-    const res = await fetch(url, opts);
-    if(res.status === 401) { driveConnected = false; updateDrivePill(); showToast('⚠️ Session Drive expirée', 'err'); return null; }
-    return res;
-  } catch(e) { return null; }
+// ════════════════════════════════════════════
+// DRIVE API
+// ════════════════════════════════════════════
+async function driveReq(method,url,body,extra={}) {
+  const h={Authorization:'Bearer '+driveAccessToken,...extra}; const o={method,headers:h};
+  if(body!==undefined) o.body=body;
+  try{ const r=await fetch(url,o); if(r.status===401){driveConnected=false;updateDriveUI();showToast('⚠️ Session Drive expirée','error');return null;} return r; }catch(e){return null;}
 }
 
 async function getOrCreateFolder() {
-  const res = await driveReq('GET',
-    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(`name='${DRIVE_FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`)}&fields=files(id,name)&spaces=drive`
-  );
-  if(!res) return null;
-  const d = await res.json();
-  if(d.files && d.files.length > 0) {
-    driveFolderId = d.files[0].id;
-    sessionStorage.setItem('drive_folder_id', driveFolderId);
-    return driveFolderId;
-  }
-  const cr = await driveReq('POST','https://www.googleapis.com/drive/v3/files',
-    JSON.stringify({ name: DRIVE_FOLDER_NAME, mimeType: 'application/vnd.google-apps.folder' }),
-    {'Content-Type':'application/json'}
-  );
-  if(!cr) return null;
-  const cd = await cr.json();
-  driveFolderId = cd.id;
-  sessionStorage.setItem('drive_folder_id', driveFolderId);
-  return driveFolderId;
+  const q=encodeURIComponent(`name='${DRIVE_FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  const r=await driveReq('GET',`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&spaces=drive`);
+  if(!r) return null; const d=await r.json();
+  if(d.files&&d.files.length>0){driveFolderId=d.files[0].id;sessionStorage.setItem('drive_folder_id',driveFolderId);return driveFolderId;}
+  const cr=await driveReq('POST','https://www.googleapis.com/drive/v3/files',JSON.stringify({name:DRIVE_FOLDER_NAME,mimeType:'application/vnd.google-apps.folder'}),{'Content-Type':'application/json'});
+  if(!cr) return null; const cd=await cr.json(); driveFolderId=cd.id; sessionStorage.setItem('drive_folder_id',driveFolderId);
+  showToast(`📁 Dossier "${DRIVE_FOLDER_NAME}" créé`,'success'); return driveFolderId;
 }
 
 async function initDriveFile() {
-  const folderId = await getOrCreateFolder();
-  const query = folderId
-    ? `name='${DRIVE_FILE_NAME}' and '${folderId}' in parents and trashed=false`
-    : `name='${DRIVE_FILE_NAME}' and trashed=false`;
-  const res = await driveReq('GET',
-    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,modifiedTime)&spaces=drive`
-  );
-  if(!res) return;
-  const d = await res.json();
-  if(d.files && d.files.length > 0) {
-    driveFileId = d.files[0].id;
-    sessionStorage.setItem('drive_file_id', driveFileId);
-    await loadFromDrive();
-  } else {
-    await createDriveFile();
-  }
+  const fid=await getOrCreateFolder();
+  const q=fid?`name='${DRIVE_FILE_NAME}' and '${fid}' in parents and trashed=false`:`name='${DRIVE_FILE_NAME}' and trashed=false`;
+  const r=await driveReq('GET',`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name,modifiedTime)&spaces=drive`);
+  if(!r) return; const d=await r.json();
+  if(d.files&&d.files.length>0){ driveFileId=d.files[0].id; sessionStorage.setItem('drive_file_id',driveFileId); await loadFromDrive(); }
+  else { await createDriveFile(); }
 }
 
 async function createDriveFile() {
-  const initContent = JSON.stringify({type:'init', date: new Date().toISOString(), refs, config}) + '\n';
-  const parents = driveFolderId ? [driveFolderId] : [];
-  const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/x-ndjson', parents };
-  const boundary = '-------314159265358979323846';
-  const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n--${boundary}\r\nContent-Type: application/x-ndjson\r\n\r\n${initContent}\r\n--${boundary}--`;
-  const res = await driveReq('POST',
-    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-    body, {'Content-Type':`multipart/related; boundary="${boundary}"`}
-  );
-  if(!res) return;
-  const d = await res.json();
-  driveFileId = d.id;
-  sessionStorage.setItem('drive_file_id', driveFileId);
-  showToast(`✅ Fichier créé dans "${DRIVE_FOLDER_NAME}"`, 'ok');
+  const init=JSON.stringify({type:'init',date:new Date().toISOString(),refs,config})+'\n';
+  const parents=driveFolderId?[driveFolderId]:[];
+  const meta={name:DRIVE_FILE_NAME,mimeType:'application/x-ndjson',parents};
+  const b='-------314159265358979323846';
+  const body=`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${b}\r\nContent-Type: application/x-ndjson\r\n\r\n${init}\r\n--${b}--`;
+  const r=await driveReq('POST','https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',body,{'Content-Type':`multipart/related; boundary="${b}"`});
+  if(!r) return; const d=await r.json(); driveFileId=d.id; sessionStorage.setItem('drive_file_id',driveFileId);
+  showToast(`✅ Fichier créé dans "${DRIVE_FOLDER_NAME}"`,'success');
 }
 
 async function loadFromDrive() {
-  if(!driveFileId || !driveAccessToken) return;
-  const res = await driveReq('GET', `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`);
-  if(!res) return;
-  const text = await res.text();
-  parseNdjson(text);
-  updateDrivePill();
-  renderAll();
-  setSaveStatus(`✅ Drive chargé — ${allOperations.length} opérations`, 'saved');
-  sessionStorage.setItem('pb_config_cache', JSON.stringify(config));
+  if(!driveFileId||!driveAccessToken) return;
+  const r=await driveReq('GET',`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`);
+  if(!r) return; const text=await r.text();
+  parseNdjson(text); updateDriveUI(); renderAll();
+  showToast(`✅ ${allOperations.length} opérations chargées (Drive)`,'success');
+  sessionStorage.setItem('pb_config_cache',JSON.stringify(config));
 }
 
-async function saveToDrive(content) {
-  if(!driveFileId || !driveAccessToken) return false;
-  const res = await driveReq('PATCH',
-    `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
-    content, {'Content-Type':'application/x-ndjson'}
-  );
-  return res && res.ok;
-}
+// ════════════════════════════════════════════
+// SAUVEGARDE CHIRURGICALE
+// Préserve les lignes operation + paiement
+// Réécrit uniquement config + refs + prix
+// ════════════════════════════════════════════
+async function surgicalSave() {
+  if(!driveConnected && !fileHandle) { showToast('⚠️ Connectez Drive ou ouvrez un fichier !','error'); return false; }
 
-function buildFullContent() {
-  const lines = [];
-  lines.push(JSON.stringify({type:'config', data: config}));
-  lines.push(JSON.stringify({type:'refs', data: refs}));
-  for(const p of historiquePrix) lines.push(JSON.stringify({type:'prix', data: p}));
-  for(const op of allOperations) lines.push(JSON.stringify(op));
-  for(const [tid, pay] of Object.entries(paiementsData)) lines.push(JSON.stringify(pay));
-  return lines.join('\n') + '\n';
-}
+  // Lignes à préserver (opérations et paiements intacts)
+  const preserved = rawLines.filter(l => {
+    try{ const o=JSON.parse(l); return o.type==='operation'||o.type==='paiement'; }catch(e){return false;}
+  });
 
-async function persistData() {
-  const content = buildFullContent();
+  // Nouvelles lignes admin uniquement
+  const adminLines = [
+    JSON.stringify({type:'config', data:config, date:new Date().toISOString()}),
+    JSON.stringify({type:'refs',   data:refs,   date:new Date().toISOString()}),
+    ...historiquePrix.map(p => JSON.stringify({type:'prix', data:p}))
+  ];
+
+  const fullContent = [...adminLines, ...preserved].join('\n') + '\n';
+
   let ok = false;
+
   // Drive
   if(driveConnected && driveFileId) {
-    ok = await saveToDrive(content);
+    const r=await driveReq('PATCH',`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,fullContent,{'Content-Type':'application/x-ndjson'});
+    if(r&&r.ok) ok=true;
   }
-  // Local
+
+  // Fichier local
   if(fileHandle) {
     try {
-      const perm = await fileHandle.queryPermission({mode:'readwrite'});
-      if(perm==='granted' || (await fileHandle.requestPermission({mode:'readwrite'})) === 'granted') {
-        const w = await fileHandle.createWritable();
-        await w.write(content);
-        await w.close();
-        ok = true;
+      const perm=await fileHandle.queryPermission({mode:'readwrite'});
+      if(perm==='granted'||(await fileHandle.requestPermission({mode:'readwrite'}))==='granted') {
+        const w=await fileHandle.createWritable(); await w.write(fullContent); await w.close(); ok=true;
       }
-    } catch(e){}
+    } catch(e){ console.warn('Local write error:',e); }
   }
+
+  if(ok) sessionStorage.setItem('pb_config_cache',JSON.stringify(config));
   return ok;
 }
 
-// ================================================================
-// FILE LOCAL
-// ================================================================
-async function openLocalFile() {
-  if(!window.showOpenFilePicker) { showToast('⚠️ Utilisez Chrome/Edge 86+', 'err'); return; }
-  try {
-    const [h] = await window.showOpenFilePicker({ multiple: false });
-    fileHandle = h;
-    await loadFileData();
-    closeDriveOverlay();
-  } catch(e) {}
-}
-
-async function loadFileData() {
-  if(!fileHandle) return;
-  try {
-    const file = await fileHandle.getFile();
-    const text = await file.text();
-    parseNdjson(text);
-    renderAll();
-    setSaveStatus(`✅ Fichier local — ${allOperations.length} opérations`, 'saved');
-    sessionStorage.setItem('pb_config_cache', JSON.stringify(config));
-  } catch(e) { showToast('Erreur lecture: ' + e.message, 'err'); }
-}
-
-// ================================================================
+// ════════════════════════════════════════════
 // PARSE NDJSON
-// ================================================================
+// ════════════════════════════════════════════
 function parseNdjson(text) {
-  const lines = text.trim().split('\n').filter(l => l.trim());
-  allOperations = [];
-  historiquePrix = [];
-  paiementsData = {};
-  for(const line of lines) {
+  rawLines=text.trim().split('\n').filter(l=>l.trim());
+  allOperations=[]; historiquePrix=[]; refs={produits:[],clients:[],fournisseurs:[],vehicules:[],chauffeurs:[],operateurs:[]};
+  for(const line of rawLines) {
     try {
-      const obj = JSON.parse(line);
-      if(obj.type === 'operation') allOperations.push(obj);
-      else if(obj.type === 'refs') { refs = {...refs, ...obj.data}; if(!refs.operateurs) refs.operateurs=[]; if(!refs.chauffeurs) refs.chauffeurs=[]; }
-      else if(obj.type === 'init' && obj.refs) { refs = {...refs, ...obj.refs}; if(!refs.operateurs) refs.operateurs=[]; if(!refs.chauffeurs) refs.chauffeurs=[]; }
-      else if(obj.type === 'init' && obj.config) config = {...config, ...obj.config};
-      else if(obj.type === 'config') config = {...config, ...obj.data};
-      else if(obj.type === 'prix') historiquePrix.push(obj.data);
-      else if(obj.type === 'paiement') paiementsData[obj.ticketId] = obj;
+      const o=JSON.parse(line);
+      if(o.type==='operation') allOperations.push(o);
+      else if(o.type==='refs') { refs={...refs,...o.data}; if(!refs.operateurs) refs.operateurs=[]; if(!refs.chauffeurs) refs.chauffeurs=[]; }
+      else if(o.type==='init'&&o.refs) { refs={...refs,...o.refs}; if(!refs.operateurs) refs.operateurs=[]; if(!refs.chauffeurs) refs.chauffeurs=[]; }
+      else if(o.type==='init'&&o.config) config={...config,...o.config};
+      else if(o.type==='config') config={...config,...o.data};
+      else if(o.type==='prix') historiquePrix.push(o.data);
     } catch(e){}
   }
-  historiquePrix.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  historiquePrix.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
 
-// ================================================================
+// ════════════════════════════════════════════
 // RENDER ALL
-// ================================================================
+// ════════════════════════════════════════════
 function renderAll() {
-  renderConfig();
-  renderPrixHistory();
-  renderChips('produits');
-  renderChips('vehicules');
-  renderChips('fournisseurs');
-  renderChips('clients');
-  renderChauffeurs();
-  renderOperateurs();
+  loadConfigToForm(); renderHistoriquePrix(); renderOperateursList();
+  renderRefList('produits'); renderRefList('clients'); renderRefList('fournisseurs');
+  renderRefList('vehicules'); renderChauffeursList(); populateVehiculeSelect();
 }
 
-// ================================================================
+// ════════════════════════════════════════════
 // CONFIG
-// ================================================================
-function renderConfig() {
-  document.getElementById('cfg-nom').value = config.nom || '';
-  document.getElementById('cfg-adresse').value = config.adresse || '';
-  document.getElementById('cfg-tel').value = config.tel || '';
-  document.getElementById('cfg-rccm').value = config.rccm || '';
-  document.getElementById('cfg-campagne').value = config.campagne || '';
-  document.getElementById('cfg-capacite').value = config.capacite || 60000;
-  document.getElementById('cfg-unite').value = config.unite || 'kg';
-  document.getElementById('cfg-seq').value = config.seq || 1;
+// ════════════════════════════════════════════
+function loadConfigToForm() {
+  document.getElementById('cfg-nom').value=config.nom||'';
+  document.getElementById('cfg-adresse').value=config.adresse||'';
+  document.getElementById('cfg-tel').value=config.tel||'';
+  document.getElementById('cfg-rccm').value=config.rccm||'';
+  document.getElementById('cfg-campagne').value=config.campagne||'';
+  document.getElementById('cfg-capacite').value=config.capacite||60000;
+  document.getElementById('cfg-unite').value=config.unite||'kg';
+  document.getElementById('cfg-seq').value=config.seq||1;
 }
 
 async function saveConfig() {
-  config.nom = document.getElementById('cfg-nom').value;
-  config.adresse = document.getElementById('cfg-adresse').value;
-  config.tel = document.getElementById('cfg-tel').value;
-  config.rccm = document.getElementById('cfg-rccm').value;
-  config.campagne = document.getElementById('cfg-campagne').value;
-  config.capacite = parseInt(document.getElementById('cfg-capacite').value) || 60000;
-  config.unite = document.getElementById('cfg-unite').value;
-  config.seq = parseInt(document.getElementById('cfg-seq').value) || 1;
-  const ok = await persistData();
-  if(ok) { sessionStorage.setItem('pb_config_cache', JSON.stringify(config)); showToast('✅ Configuration sauvegardée', 'ok'); isDirty=false; setSaveStatus('✅ Sauvegardé', 'saved'); }
-  else showToast('⚠️ Erreur de sauvegarde', 'err');
+  config.nom=document.getElementById('cfg-nom').value;
+  config.adresse=document.getElementById('cfg-adresse').value;
+  config.tel=document.getElementById('cfg-tel').value;
+  config.rccm=document.getElementById('cfg-rccm').value;
+  config.campagne=document.getElementById('cfg-campagne').value;
+  config.capacite=parseInt(document.getElementById('cfg-capacite').value)||60000;
+  config.unite=document.getElementById('cfg-unite').value;
+  config.seq=parseInt(document.getElementById('cfg-seq').value)||1;
+  const mdp=document.getElementById('cfg-mdp-operateur').value;
+  if(mdp) config.mdpOperateur=mdp;
+  const ok=await surgicalSave();
+  if(ok){ showToast('✅ Configuration sauvegardée !','success'); document.getElementById('cfg-mdp-operateur').value=''; updateDriveUI(); }
 }
 
-// ================================================================
+// ════════════════════════════════════════════
 // PRIX
-// ================================================================
+// ════════════════════════════════════════════
 function updatePrixPreview() {
-  const g = parseFloat(document.getElementById('prix-graine').value) || 0;
-  const t = parseFloat(document.getElementById('prix-transport').value) || 0;
-  const el = document.getElementById('prix-preview');
-  if(g > 0 || t > 0) {
-    el.style.display = 'block';
-    el.innerHTML = `Aperçu pour 1 000 kg : <strong>${(1000*g).toLocaleString('fr-FR')} FCFA</strong> graine &nbsp;|&nbsp; <strong>${(1000*t).toLocaleString('fr-FR')} FCFA</strong> transport`;
-  } else el.style.display = 'none';
+  const g=parseFloat(document.getElementById('cfg-prix-graine').value)||0;
+  const t=parseFloat(document.getElementById('cfg-prix-transport').value)||0;
+  const el=document.getElementById('prix-preview');
+  if(g>0||t>0){ el.style.display='block'; el.innerHTML=`Aperçu : 1 000 kg × ${g.toLocaleString('fr-FR')} = <strong>${(1000*g).toLocaleString('fr-FR')} FCFA</strong> graine &nbsp;|&nbsp; transport : <strong>${(1000*t).toLocaleString('fr-FR')} FCFA</strong>`; }
+  else el.style.display='none';
 }
 
 async function savePrix() {
-  const g = parseFloat(document.getElementById('prix-graine').value);
-  const t = parseFloat(document.getElementById('prix-transport').value);
-  const date = document.getElementById('prix-date').value;
-  if(!g && !t) { showToast('Saisir au moins un prix', 'err'); return; }
-  if(!date) { showToast('Saisir la date', 'err'); return; }
-  const entry = { date, graine: g||0, transport: t||0, savedAt: new Date().toISOString(), ticketsLies:[] };
-  const idx = historiquePrix.findIndex(p => p.date === date);
-  if(idx >= 0) historiquePrix[idx] = entry;
-  else { historiquePrix.unshift(entry); historiquePrix.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); }
-  const ok = await persistData();
-  if(ok) { renderPrixHistory(); showToast('✅ Tarif enregistré', 'ok'); document.getElementById('prix-graine').value=''; document.getElementById('prix-transport').value=''; document.getElementById('prix-preview').style.display='none'; }
-  else showToast('⚠️ Erreur de sauvegarde', 'err');
+  const g=parseFloat(document.getElementById('cfg-prix-graine').value);
+  const t=parseFloat(document.getElementById('cfg-prix-transport').value);
+  const date=document.getElementById('cfg-prix-date').value;
+  if(!g&&!t){ showToast('Saisir au moins un prix','error'); return; }
+  if(!date){ showToast('Saisir la date de validité','error'); return; }
+  const entry={date,graine:g||0,transport:t||0,savedAt:new Date().toISOString(),ticketsLies:[]};
+  entry.ticketsLies=allOperations.filter(op=>op.date&&op.date.slice(0,10)>=date).filter(op=>!historiquePrix.find(p=>p.date>date&&p.date<=op.date.slice(0,10))).map(op=>{const d=new Date(op.date);const ymd=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');return `TRP-${ymd}-${String(op.seq).padStart(3,'0')}-${ymd}`;});
+  const idx=historiquePrix.findIndex(p=>p.date===date);
+  if(idx>=0) historiquePrix[idx]=entry; else{historiquePrix.unshift(entry);historiquePrix.sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
+  const ok=await surgicalSave();
+  if(ok){ renderHistoriquePrix(); showToast('✅ Prix enregistré !','success'); document.getElementById('cfg-prix-graine').value=''; document.getElementById('cfg-prix-transport').value=''; document.getElementById('prix-preview').style.display='none'; }
 }
 
-function renderPrixHistory() {
-  const el = document.getElementById('prix-history-list');
-  if(!historiquePrix || historiquePrix.length === 0) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">Aucun tarif enregistré</div>';
-    return;
-  }
-  el.innerHTML = historiquePrix.map((p, i) => `
+function renderHistoriquePrix() {
+  const el=document.getElementById('historique-prix-list');
+  if(!el) return;
+  if(!historiquePrix||historiquePrix.length===0){ el.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:12px;">Aucun historique disponible</div>'; return; }
+  el.innerHTML=historiquePrix.map((p,i)=>`
     <div class="prix-row ${i===0?'current':''}">
       <span class="prix-date">📅 ${p.date}</span>
       <div class="prix-vals">
@@ -998,237 +706,153 @@ function renderPrixHistory() {
         ${p.ticketsLies&&p.ticketsLies.length>0?`<div class="prix-val">${p.ticketsLies.length} ticket(s) lié(s)</div>`:''}
       </div>
       ${i===0?'<span class="prix-badge">ACTUEL</span>':''}
-      <span class="prix-del" onclick="deletePrix(${i})" title="Supprimer">×</span>
+      <span class="prix-x" onclick="deletePrix(${i})" title="Supprimer">×</span>
     </div>
   `).join('');
 }
 
 async function deletePrix(idx) {
   if(!confirm('Supprimer ce tarif ?')) return;
-  historiquePrix.splice(idx, 1);
-  const ok = await persistData();
-  if(ok) { renderPrixHistory(); showToast('🗑️ Tarif supprimé', 'ok'); }
+  historiquePrix.splice(idx,1);
+  const ok=await surgicalSave();
+  if(ok){ renderHistoriquePrix(); showToast('🗑️ Tarif supprimé','success'); }
 }
 
-// ================================================================
-// RÉFÉRENTIELS — CHIPS
-// ================================================================
-function renderChips(key) {
-  const el = document.getElementById('chips-' + key);
+// ════════════════════════════════════════════
+// RÉFÉRENTIELS
+// ════════════════════════════════════════════
+function renderRefList(key) {
+  const el=document.getElementById('list-'+key);
   if(!el) return;
-  const items = refs[key] || [];
-  if(items.length === 0) { el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Aucun élément</span>'; return; }
-  el.innerHTML = items.map((v, i) => `
-    <span class="chip">${v}<span class="chip-del" onclick="removeChip('${key}',${i})">×</span></span>
-  `).join('');
+  const items=refs[key]||[];
+  if(items.length===0){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:4px 0;">Aucun élément</div>';return;}
+  el.innerHTML=items.map((v,i)=>`<span class="ref-chip">${v}<span class="ref-chip-x" onclick="removeRef('${key}',${i})">×</span></span>`).join('');
 }
 
-function addChip(key, inputId) {
-  const input = document.getElementById(inputId);
-  const val = input.value.trim();
+function addRef(key,inputId) {
+  const input=document.getElementById(inputId); const val=input.value.trim();
   if(!val) return;
-  if(!refs[key]) refs[key] = [];
-  if(refs[key].includes(val)) { showToast('Déjà présent', 'err'); return; }
-  refs[key].push(val);
-  refs[key].sort();
-  input.value = '';
-  renderChips(key);
-  markDirty();
+  if(!refs[key]) refs[key]=[];
+  if(refs[key].includes(val)){showToast('Déjà présent','error');return;}
+  refs[key].push(val); refs[key].sort(); input.value='';
+  renderRefList(key);
+  if(key==='vehicules') populateVehiculeSelect();
 }
 
-function removeChip(key, idx) {
-  refs[key].splice(idx, 1);
-  renderChips(key);
-  markDirty();
-}
+function removeRef(key,idx) { refs[key].splice(idx,1); renderRefList(key); if(key==='vehicules') populateVehiculeSelect(); }
 
 async function saveRefs() {
-  const ok = await persistData();
-  if(ok) { showToast('✅ Référentiels sauvegardés', 'ok'); isDirty=false; setSaveStatus('✅ Sauvegardé', 'saved'); }
-  else showToast('⚠️ Erreur de sauvegarde', 'err');
+  const ok=await surgicalSave();
+  if(ok) showToast('✅ Référentiels sauvegardés !','success');
 }
 
-// ================================================================
+// ════════════════════════════════════════════
 // CHAUFFEURS
-// ================================================================
-function renderChauffeurs() {
-  const el = document.getElementById('chauffeurs-list');
-  const vsel = document.getElementById('ch-vehicule');
-  if(!refs.chauffeurs || refs.chauffeurs.length === 0) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:12px;">Aucun chauffeur enregistré</div>';
-  } else {
-    el.innerHTML = refs.chauffeurs.map((c, i) => `
-      <div class="person-card">
-        <div>
-          <div class="person-main">🧑‍✈️ ${c.nom} ${c.prenom||''}</div>
-          <div class="person-sub">${c.ville ? c.ville + ' · ' : ''}${c.vehicule ? '🚚 ' + c.vehicule : 'Véhicule non associé'}</div>
-        </div>
-        <span class="person-del" onclick="removeChauffeur(${i})">×</span>
-      </div>
-    `).join('');
-  }
-  // Populate véhicule select
-  if(vsel) {
-    const cur = vsel.value;
-    vsel.innerHTML = '<option value="">— Aucun —</option>' + (refs.vehicules||[]).map(v => `<option value="${v}" ${v===cur?'selected':''}>${v}</option>`).join('');
-  }
+// ════════════════════════════════════════════
+function populateVehiculeSelect() {
+  const sel=document.getElementById('new-chauffeur-vehicule');
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Aucun —</option>'+(refs.vehicules||[]).map(v=>`<option value="${v}" ${v===cur?'selected':''}>${v}</option>`).join('');
+}
+
+function renderChauffeursList() {
+  const el=document.getElementById('list-chauffeurs');
+  if(!el) return;
+  if(!refs.chauffeurs||refs.chauffeurs.length===0){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:4px 0;">Aucun chauffeur enregistré</div>';return;}
+  el.innerHTML=refs.chauffeurs.map((c,i)=>`
+    <div class="person-row">
+      <div><div class="person-main">🧑‍✈️ ${c.nom} ${c.prenom||''}</div><div class="person-sub">${c.ville?c.ville+' · ':''}${c.vehicule?'🚚 '+c.vehicule:'Véhicule non associé'}</div></div>
+      <span class="person-x" onclick="removeChauffeur(${i})">×</span>
+    </div>`).join('');
 }
 
 function addChauffeur() {
-  const nom = document.getElementById('ch-nom').value.trim();
-  if(!nom) { showToast('Saisir le nom du chauffeur', 'err'); return; }
-  const prenom = document.getElementById('ch-prenom').value.trim();
-  const ville = document.getElementById('ch-ville').value.trim();
-  const vehicule = document.getElementById('ch-vehicule').value;
-  if(!refs.chauffeurs) refs.chauffeurs = [];
-  refs.chauffeurs.push({ nom, prenom, ville, vehicule });
-  document.getElementById('ch-nom').value = '';
-  document.getElementById('ch-prenom').value = '';
-  document.getElementById('ch-ville').value = '';
-  document.getElementById('ch-vehicule').value = '';
-  renderChauffeurs();
-  markDirty();
-  showToast('Chauffeur ajouté', 'ok');
+  const nom=document.getElementById('new-chauffeur-nom').value.trim();
+  if(!nom){showToast('Saisir le nom','error');return;}
+  const prenom=document.getElementById('new-chauffeur-prenom').value.trim();
+  const ville=document.getElementById('new-chauffeur-ville').value.trim();
+  const vehicule=document.getElementById('new-chauffeur-vehicule').value;
+  if(!refs.chauffeurs) refs.chauffeurs=[];
+  refs.chauffeurs.push({nom,prenom,ville,vehicule});
+  document.getElementById('new-chauffeur-nom').value='';
+  document.getElementById('new-chauffeur-prenom').value='';
+  document.getElementById('new-chauffeur-ville').value='';
+  document.getElementById('new-chauffeur-vehicule').value='';
+  renderChauffeursList(); showToast('✅ Chauffeur ajouté','success');
 }
+function removeChauffeur(idx){refs.chauffeurs.splice(idx,1);renderChauffeursList();}
 
-function removeChauffeur(idx) {
-  refs.chauffeurs.splice(idx, 1);
-  renderChauffeurs();
-  markDirty();
-}
-
-// ================================================================
+// ════════════════════════════════════════════
 // OPÉRATEURS
-// ================================================================
-function renderOperateurs() {
-  const el = document.getElementById('operateurs-list');
-  const sel = document.getElementById('operateur-actif');
-  if(!refs.operateurs || refs.operateurs.length === 0) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:12px;">Aucun opérateur enregistré</div>';
-  } else {
-    el.innerHTML = refs.operateurs.map((op, i) => `
-      <div class="person-card">
-        <div class="person-main">👷 ${op}</div>
-        <span class="person-del" onclick="removeOperateur(${i})">×</span>
-      </div>
-    `).join('');
-  }
-  if(sel) {
-    const cur = config.operateurActif || '';
-    sel.innerHTML = '<option value="">— Aucun sélectionné —</option>' +
-      (refs.operateurs||[]).map(op => `<option value="${op}" ${op===cur?'selected':''}>${op}</option>`).join('');
-    sel.value = cur;
-  }
+// ════════════════════════════════════════════
+function renderOperateursList() {
+  const el=document.getElementById('list-operateurs');
+  const sel=document.getElementById('cfg-operateur-actif');
+  if(!el||!sel) return;
+  if(!refs.operateurs||refs.operateurs.length===0){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:4px 0;">Aucun opérateur enregistré</div>';sel.innerHTML='<option value="">— Aucun —</option>';return;}
+  el.innerHTML=refs.operateurs.map((op,i)=>`<div class="person-row"><div class="person-main">👷 ${op}</div><span class="person-x" onclick="removeOperateur(${i})">×</span></div>`).join('');
+  const cur=config.operateurActif||'';
+  sel.innerHTML='<option value="">— Aucun sélectionné —</option>'+refs.operateurs.map(op=>`<option value="${op}" ${op===cur?'selected':''}>${op}</option>`).join('');
 }
+function addOperateur(){const nom=document.getElementById('new-operateur-nom').value.trim();if(!nom){showToast('Saisir le nom','error');return;}if(!refs.operateurs)refs.operateurs=[];if(refs.operateurs.includes(nom)){showToast('Déjà présent','error');return;}refs.operateurs.push(nom);document.getElementById('new-operateur-nom').value='';renderOperateursList();}
+function removeOperateur(idx){refs.operateurs.splice(idx,1);renderOperateursList();}
+async function saveOperateurs(){config.operateurActif=document.getElementById('cfg-operateur-actif').value;const ok=await surgicalSave();if(ok)showToast('✅ Opérateurs sauvegardés !','success');}
 
-function addOperateur() {
-  const nom = document.getElementById('new-operateur').value.trim();
-  if(!nom) { showToast('Saisir un nom', 'err'); return; }
-  if(!refs.operateurs) refs.operateurs = [];
-  if(refs.operateurs.includes(nom)) { showToast('Déjà présent', 'err'); return; }
-  refs.operateurs.push(nom);
-  document.getElementById('new-operateur').value = '';
-  renderOperateurs();
-  markDirty();
-}
-
-function removeOperateur(idx) {
-  refs.operateurs.splice(idx, 1);
-  renderOperateurs();
-  markDirty();
-}
-
-async function saveOperateurs() {
-  config.operateurActif = document.getElementById('operateur-actif').value;
-  const ok = await persistData();
-  if(ok) { showToast('✅ Opérateurs sauvegardés', 'ok'); isDirty=false; setSaveStatus('✅ Sauvegardé', 'saved'); }
-  else showToast('⚠️ Erreur de sauvegarde', 'err');
-}
-
-// ================================================================
+// ════════════════════════════════════════════
 // SÉCURITÉ
-// ================================================================
-function checkMdpMatch() {
-  const a = document.getElementById('mdp-new').value;
-  const b = document.getElementById('mdp-confirm').value;
-  const msg = document.getElementById('mdp-match-msg');
-  if(!a) { msg.textContent=''; return; }
-  if(a === b) { msg.style.color='var(--green)'; msg.textContent='✅ Les mots de passe correspondent'; }
-  else { msg.style.color='var(--red)'; msg.textContent='❌ Les mots de passe ne correspondent pas'; }
+// ════════════════════════════════════════════
+function checkMdpMatch(){const a=document.getElementById('mdp-new').value,b=document.getElementById('mdp-confirm').value,m=document.getElementById('mdp-match-msg');if(!a){m.textContent='';return;}if(a===b){m.style.color='var(--green2)';m.textContent='✅ Correspondent';}else{m.style.color='var(--red)';m.textContent='❌ Ne correspondent pas';}}
+async function saveMdpOperateur(){const a=document.getElementById('mdp-new').value,b=document.getElementById('mdp-confirm').value;if(!a){showToast('Saisir un mot de passe','error');return;}if(a!==b){showToast('Ne correspondent pas','error');return;}config.mdpOperateur=a;const ok=await surgicalSave();if(ok){showToast('🔐 Mot de passe opérateur mis à jour','success');document.getElementById('mdp-new').value='';document.getElementById('mdp-confirm').value='';document.getElementById('mdp-match-msg').textContent='';}}
+function checkAdminMdpMatch(){const a=document.getElementById('admin-mdp-new').value,b=document.getElementById('admin-mdp-confirm').value,m=document.getElementById('admin-mdp-match-msg');if(!a){m.textContent='';return;}if(a===b){m.style.color='var(--green2)';m.textContent='✅ Correspondent';}else{m.style.color='var(--red)';m.textContent='❌ Ne correspondent pas';}}
+async function saveAdminMdp(){const a=document.getElementById('admin-mdp-new').value,b=document.getElementById('admin-mdp-confirm').value;if(!a){showToast('Saisir un mot de passe','error');return;}if(a!==b){showToast('Ne correspondent pas','error');return;}config.mdpAdmin=a;const ok=await surgicalSave();if(ok){sessionStorage.setItem('pb_config_cache',JSON.stringify(config));showToast('🛡️ Mot de passe admin mis à jour','success');document.getElementById('admin-mdp-new').value='';document.getElementById('admin-mdp-confirm').value='';document.getElementById('admin-mdp-match-msg').textContent='';}}
+
+// ════════════════════════════════════════════
+// FICHIER LOCAL
+// ════════════════════════════════════════════
+function openFilePicker(){document.getElementById('file-picker-overlay').classList.add('open');}
+function closeFilePicker(){document.getElementById('file-picker-overlay').classList.remove('open');}
+async function pickFile(){
+  if(!window.showOpenFilePicker){showToast('⚠️ Utilisez Chrome/Edge 86+','error');return;}
+  try{
+    const[h]=await window.showOpenFilePicker({multiple:false}); fileHandle=h; closeFilePicker();
+    const file=await fileHandle.getFile(); const text=await file.text();
+    parseNdjson(text); renderAll(); updateFileStatus();
+    showToast(`✅ ${allOperations.length} opérations chargées (local)`,'success');
+  }catch(e){if(e.name!=='AbortError')showToast('Erreur: '+e.message,'error');}
+}
+function updateFileStatus(){
+  const dot=document.getElementById('file-dot'),txt=document.getElementById('file-pill-txt');
+  if(fileHandle){dot.style.background='var(--green)';txt.textContent=fileHandle.name.length>16?'...'+fileHandle.name.slice(-13):fileHandle.name;}
+  else{dot.style.background='var(--text3)';txt.textContent='Fichier';}
 }
 
-async function saveMdpOperateur() {
-  const a = document.getElementById('mdp-new').value;
-  const b = document.getElementById('mdp-confirm').value;
-  if(!a) { showToast('Saisir un mot de passe', 'err'); return; }
-  if(a !== b) { showToast('Les mots de passe ne correspondent pas', 'err'); return; }
-  config.mdpOperateur = a;
-  const ok = await persistData();
-  if(ok) { showToast('🔐 Mot de passe opérateur mis à jour', 'ok'); document.getElementById('mdp-new').value=''; document.getElementById('mdp-confirm').value=''; document.getElementById('mdp-match-msg').textContent=''; }
-  else showToast('⚠️ Erreur de sauvegarde', 'err');
+// ════════════════════════════════════════════
+// UI — Drive status
+// ════════════════════════════════════════════
+function updateDriveUI(){
+  const pill=document.getElementById('drive-pill'),txt=document.getElementById('drive-pill-txt');
+  const email=sessionStorage.getItem('drive_email')||'';
+  if(driveConnected){pill.classList.add('ok');txt.textContent=email?email.split('@')[0]:'Drive ✓';}
+  else{pill.classList.remove('ok');txt.textContent='Drive';}
+  const c=document.getElementById('btn-drive-connect'),s=document.getElementById('btn-drive-sync'),d=document.getElementById('btn-drive-disconnect'),i=document.getElementById('drive-config-info');
+  if(driveConnected){
+    if(c)c.style.display='none';if(s)s.style.display='inline-flex';if(d)d.style.display='inline-flex';
+    if(i)i.innerHTML=`<div class="alert alert-success">✅ Connecté${email?' : <strong>'+email+'</strong>':''}</div><div class="info-row"><span class="ir-key">Dossier</span><span class="ir-val">📁 ${DRIVE_FOLDER_NAME}</span></div><div class="info-row"><span class="ir-key">Fichier</span><span class="ir-val">${DRIVE_FILE_NAME}</span></div><div class="info-row"><span class="ir-key">Opérations</span><span class="ir-val">${allOperations.length} (préservées, non modifiées)</span></div>`;
+  } else {
+    if(c)c.style.display='inline-flex';if(s)s.style.display='none';if(d)d.style.display='none';
+    if(i)i.innerHTML=`<div class="alert alert-warn">⚠️ Non connecté à Google Drive.</div>`;
+  }
 }
 
-function checkAdminMdpMatch() {
-  const a = document.getElementById('admin-mdp-new').value;
-  const b = document.getElementById('admin-mdp-confirm').value;
-  const msg = document.getElementById('admin-mdp-match-msg');
-  if(!a) { msg.textContent=''; return; }
-  if(a === b) { msg.style.color='var(--green)'; msg.textContent='✅ Correspondent'; }
-  else { msg.style.color='var(--red)'; msg.textContent='❌ Ne correspondent pas'; }
-}
-
-async function saveAdminMdp() {
-  const a = document.getElementById('admin-mdp-new').value;
-  const b = document.getElementById('admin-mdp-confirm').value;
-  if(!a) { showToast('Saisir un mot de passe', 'err'); return; }
-  if(a !== b) { showToast('Les mots de passe ne correspondent pas', 'err'); return; }
-  config.mdpAdmin = a;
-  const ok = await persistData();
-  if(ok) { sessionStorage.setItem('pb_config_cache', JSON.stringify(config)); showToast('🛡️ Mot de passe admin mis à jour', 'ok'); document.getElementById('admin-mdp-new').value=''; document.getElementById('admin-mdp-confirm').value=''; document.getElementById('admin-mdp-match-msg').textContent=''; }
-  else showToast('⚠️ Erreur de sauvegarde', 'err');
-}
-
-// ================================================================
-// UI HELPERS
-// ================================================================
-function updateDrivePill() {
-  const email = sessionStorage.getItem('drive_email') || '';
-  const label = driveConnected ? (email ? email.split('@')[0] : 'Drive ✓') : 'Drive';
-  ['drive-pill','drive-pill2'].forEach(id => {
-    const el = document.getElementById(id);
-    if(!el) return;
-    if(driveConnected) el.classList.add('ok'); else el.classList.remove('ok');
-  });
-  document.getElementById('drive-pill-text').textContent = label;
-  if(document.getElementById('drive-text2')) document.getElementById('drive-text2').textContent = label;
-  ['drive-dot2'].forEach(id => {
-    const d = document.getElementById(id);
-    if(d) d.style.background = driveConnected ? 'var(--green)' : 'var(--text3)';
-  });
-}
-
-function markDirty() {
-  isDirty = true;
-  setSaveStatus('● Modifications non sauvegardées', 'dirty');
-}
-
-function setSaveStatus(msg, type) {
-  const el = document.getElementById('save-status');
-  el.textContent = msg;
-  el.className = 'save-status ' + (type||'');
-}
-
+// ════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════
 let toastTimer;
-function showToast(msg, type='') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'show ' + type;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.className = '', 3000);
-}
+function showToast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className='show '+type;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className='',3000);}
 
-// Init prix date
-document.getElementById('prix-date').value = new Date().toISOString().slice(0,10);
+// Init
+document.getElementById('cfg-prix-date').value=new Date().toISOString().slice(0,10);
 </script>
 </body>
 </html>

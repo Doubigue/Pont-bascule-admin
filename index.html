@@ -39,15 +39,16 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 #app{display:none;flex-direction:column;height:100vh;height:100dvh;}
 
 /* HEADER */
-#header{background:linear-gradient(135deg,var(--surface) 0%,#141e14 100%);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 2px 16px rgba(0,0,0,.5);}
-.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold);}
+#header{background:linear-gradient(135deg,var(--surface) 0%,#141e14 100%);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 2px 16px rgba(0,0,0,.5);overflow-x:auto;scrollbar-width:none;}
+#header::-webkit-scrollbar{display:none;}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold);white-space:nowrap;flex-shrink:0;}
 .logo span{color:var(--green2);}
-.admin-badge{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;}
-.spacer{flex:1;}
-.pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);padding:5px 11px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.admin-badge{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;flex-shrink:0;}
+.spacer{flex:1;min-width:8px;}
+.pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);padding:5px 11px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
 .pill:hover{border-color:var(--gold);color:var(--gold);}
 .pill.ok{border-color:var(--green);color:var(--green);}
-.pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 
 /* TABS */
 #tabs{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
@@ -196,6 +197,9 @@ select option{background:var(--surface2);}
     <div class="pill" id="file-pill" onclick="openFilePicker()" style="margin-left:4px;">
       <span class="pill-dot" id="file-dot" style="background:var(--text3);"></span><span id="file-pill-txt">Fichier</span>
     </div>
+    <div class="pill" onclick="doLogout()" style="margin-left:4px;border-color:rgba(239,83,80,.4);color:var(--red);" title="Se déconnecter">
+      🚪 <span>Quitter</span>
+    </div>
   </div>
 
   <div id="tabs">
@@ -274,20 +278,91 @@ select option{background:var(--surface2);}
 
     <!-- OPÉRATEURS -->
     <div class="page" id="page-operateurs">
+
+      <!-- Liste des opérateurs -->
       <div class="card">
         <div class="card-title">👷 Opérateurs / Agents du Pont</div>
-        <div class="card-desc">Ces noms apparaîtront sur les tickets et dans la signature.</div>
-        <div id="list-operateurs" style="margin-bottom:10px;"></div>
-        <div style="display:flex;gap:8px;">
-          <input type="text" id="new-operateur-nom" placeholder="Nom complet opérateur" style="flex:1;" onkeydown="if(event.key==='Enter')addOperateur()">
-          <button class="btn btn-primary btn-sm" onclick="addOperateur()">+ Ajouter</button>
-        </div>
-        <div style="margin-top:12px;">
+        <div class="card-desc">Gérez ici les agents autorisés à utiliser l'application. Cliquez sur un opérateur pour modifier sa fiche complète.</div>
+        <div id="list-operateurs" style="margin-bottom:12px;"></div>
+        <div style="margin-bottom:12px;">
           <label>Opérateur actif (en service)</label>
           <select id="cfg-operateur-actif" style="margin-top:4px;"><option value="">— Aucun sélectionné —</option></select>
         </div>
-        <div class="btn-row"><button class="btn btn-success" onclick="saveOperateurs()">💾 Sauvegarder les opérateurs</button></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="openOperateurForm(-1)">➕ Ajouter un opérateur</button>
+          <button class="btn btn-success" onclick="saveOperateurs()">💾 Sauvegarder</button>
+        </div>
       </div>
+
+      <!-- Formulaire opérateur (caché par défaut) -->
+      <div class="card" id="op-form-card" style="display:none;border-color:var(--gold);">
+        <div class="card-title" id="op-form-title">👷 Nouvelle fiche opérateur</div>
+
+        <!-- Identité -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">📋 Identité</div>
+        <div class="form-grid">
+          <div class="field"><label>Nom *</label><input type="text" id="op-nom" placeholder="NOM"></div>
+          <div class="field"><label>Prénom *</label><input type="text" id="op-prenom" placeholder="Prénom"></div>
+          <div class="field"><label>Date de naissance</label><input type="date" id="op-dob" onchange="calcAge()"></div>
+          <div class="field"><label>Âge</label><input type="text" id="op-age" placeholder="Calculé auto" readonly style="background:var(--surface3);color:var(--text3);cursor:not-allowed;"></div>
+          <div class="field full"><label>Lieu de naissance</label><input type="text" id="op-lieu-naissance" placeholder="Ville, Pays"></div>
+        </div>
+
+        <!-- Pièce d'identité -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;">🪪 Pièce d'identité</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Type de carte</label>
+            <select id="op-type-carte">
+              <option value="">— Aucune —</option>
+              <option value="CNI">CNI (Carte Nationale d'Identité)</option>
+              <option value="Passeport">Passeport</option>
+              <option value="Permis">Permis de conduire</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div class="field"><label>Numéro de carte</label><input type="text" id="op-num-carte" placeholder="Ex: CI-AB-12345"></div>
+        </div>
+
+        <!-- Contact -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;">📱 Contact</div>
+        <div class="form-grid">
+          <div class="field full"><label>Numéro WhatsApp</label><input type="tel" id="op-whatsapp" placeholder="+225 07 00 00 00 00"></div>
+        </div>
+
+        <!-- Photo -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;">📷 Photo</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:4px;">
+          <div id="op-photo-preview" style="width:72px;height:72px;border-radius:50%;background:var(--surface3);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;">👷</div>
+          <div style="flex:1;">
+            <input type="file" id="op-photo-input" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('op-photo-input').click()">📷 Choisir une photo</button>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">JPG, PNG — max 2 Mo</div>
+          </div>
+        </div>
+
+        <!-- Témoin -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;">🤝 Témoin / Caution</div>
+        <div class="form-grid">
+          <div class="field"><label>Nom du témoin</label><input type="text" id="op-temoin-nom" placeholder="NOM"></div>
+          <div class="field"><label>Prénom du témoin</label><input type="text" id="op-temoin-prenom" placeholder="Prénom"></div>
+          <div class="field"><label>WhatsApp témoin</label><input type="tel" id="op-temoin-whatsapp" placeholder="+225 07 00 00 00 00"></div>
+          <div class="field"><label>Résidence témoin</label><input type="text" id="op-temoin-residence" placeholder="Quartier, Ville"></div>
+        </div>
+
+        <!-- Accès -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;">🔐 Accès application</div>
+        <div class="form-grid">
+          <div class="field"><label>Identifiant (login)</label><input type="text" id="op-login" placeholder="Ex: jean.dupont"></div>
+          <div class="field"><label>Mot de passe</label><input type="password" id="op-mdp" placeholder="Laisser vide = inchangé"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-success" onclick="saveOperateurForm()">💾 Enregistrer la fiche</button>
+          <button class="btn btn-ghost" onclick="closeOperateurForm()">✕ Annuler</button>
+        </div>
+      </div>
+
     </div>
 
     <!-- PRODUITS -->
@@ -382,6 +457,23 @@ select option{background:var(--surface2);}
         <div id="admin-mdp-match-msg" style="font-size:12px;margin-top:6px;"></div>
         <div class="btn-row"><button class="btn btn-danger" onclick="saveAdminMdp()">🛡️ Changer mot de passe admin</button></div>
       </div>
+
+      <!-- HISTORIQUE DE CONNEXION -->
+      <div class="card">
+        <div class="card-title">📋 Historique de connexion</div>
+        <div class="card-desc">Toutes les tentatives de connexion à cette interface d'administration.</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;flex:1;">
+            <span id="histo-stat-ok"  style="font-size:11px;background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.3);color:var(--green2);padding:3px 10px;border-radius:12px;">✅ 0 réussies</span>
+            <span id="histo-stat-fail" style="font-size:11px;background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:var(--red);padding:3px 10px;border-radius:12px;">❌ 0 échouées</span>
+            <span id="histo-stat-out"  style="font-size:11px;background:rgba(66,165,245,.12);border:1px solid rgba(66,165,245,.3);color:var(--blue);padding:3px 10px;border-radius:12px;">🚪 0 déconnexions</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="clearLoginHistory()">🗑️ Effacer</button>
+        </div>
+        <div id="login-history-list" style="max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;">
+          <div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">Aucun historique pour le moment</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -462,10 +554,13 @@ function tryUnlock() {
   const cache = sessionStorage.getItem('pb_config_cache');
   if(cache) { try{ mdp=JSON.parse(cache).mdpAdmin||'1234'; }catch(e){} } else mdp=config.mdpAdmin||'1234';
   if(val === mdp) {
+    logLoginEvent('success', 'Admin');
     document.getElementById('lock-screen').style.display='none';
     document.getElementById('app').style.display='flex';
+    ensureDefaultOperateur(); renderOperateursList();
     if(driveConnected && driveFileId) { document.getElementById('drive-auth-overlay').classList.remove('open'); loadFromDrive(); }
   } else {
+    logLoginEvent('fail', 'Mot de passe incorrect');
     document.getElementById('lock-error').style.display='block';
     document.getElementById('lock-input').value='';
     document.getElementById('lock-input').focus();
@@ -483,6 +578,7 @@ function showPage(name) {
   document.querySelector(`[data-page="${name}"]`).classList.add('active');
   if(name==='chauffeurs') populateVehiculeSelect();
   if(name==='operateurs') renderOperateursList();
+  if(name==='securite') renderLoginHistory();
 }
 
 // ════════════════════════════════════════════
@@ -634,6 +730,7 @@ function parseNdjson(text) {
 // RENDER ALL
 // ════════════════════════════════════════════
 function renderAll() {
+  ensureDefaultOperateur();
   loadConfigToForm(); renderHistoriquePrix(); renderOperateursList();
   renderRefList('produits'); renderRefList('clients'); renderRefList('fournisseurs');
   renderRefList('vehicules'); renderChauffeursList(); populateVehiculeSelect();
@@ -784,20 +881,181 @@ function addChauffeur() {
 function removeChauffeur(idx){refs.chauffeurs.splice(idx,1);renderChauffeursList();}
 
 // ════════════════════════════════════════════
-// OPÉRATEURS
+// OPÉRATEURS — fiche complète
 // ════════════════════════════════════════════
+let currentOpIdx = -1; // -1 = nouveau
+let opPhotoData = null; // base64
+
 function renderOperateursList() {
-  const el=document.getElementById('list-operateurs');
-  const sel=document.getElementById('cfg-operateur-actif');
-  if(!el||!sel) return;
-  if(!refs.operateurs||refs.operateurs.length===0){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:4px 0;">Aucun opérateur enregistré</div>';sel.innerHTML='<option value="">— Aucun —</option>';return;}
-  el.innerHTML=refs.operateurs.map((op,i)=>`<div class="person-row"><div class="person-main">👷 ${op}</div><span class="person-x" onclick="removeOperateur(${i})">×</span></div>`).join('');
-  const cur=config.operateurActif||'';
-  sel.innerHTML='<option value="">— Aucun sélectionné —</option>'+refs.operateurs.map(op=>`<option value="${op}" ${op===cur?'selected':''}>${op}</option>`).join('');
+  const el  = document.getElementById('list-operateurs');
+  const sel = document.getElementById('cfg-operateur-actif');
+  if (!el || !sel) return;
+  if (!refs.operateurs || refs.operateurs.length === 0) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:4px 0;">Aucun opérateur enregistré</div>';
+    sel.innerHTML = '<option value="">— Aucun —</option>';
+    return;
+  }
+  el.innerHTML = refs.operateurs.map((op, i) => {
+    const nom = op.nom || op;
+    const prenom = op.prenom || '';
+    const login = op.login || nom;
+    const photo = op.photo ? `<img src="${op.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--border2);">` : `<div style="width:36px;height:36px;border-radius:50%;background:var(--surface3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;">👷</div>`;
+    return `
+    <div class="person-row" style="gap:10px;">
+      ${photo}
+      <div style="flex:1;min-width:0;">
+        <div class="person-main">${nom} ${prenom}</div>
+        <div class="person-sub">@${login}${op.whatsapp?' · 📱'+op.whatsapp:''}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openOperateurForm(${i})">✏️</button>
+      <span class="person-x" onclick="removeOperateur(${i})">×</span>
+    </div>`;
+  }).join('');
+
+  const cur = config.operateurActif || '';
+  sel.innerHTML = '<option value="">— Aucun sélectionné —</option>' +
+    refs.operateurs.map((op, i) => {
+      const label = (op.nom || op) + (op.prenom ? ' ' + op.prenom : '');
+      const val   = op.login || op.nom || op;
+      return `<option value="${val}" ${val === cur ? 'selected' : ''}>${label}</option>`;
+    }).join('');
 }
-function addOperateur(){const nom=document.getElementById('new-operateur-nom').value.trim();if(!nom){showToast('Saisir le nom','error');return;}if(!refs.operateurs)refs.operateurs=[];if(refs.operateurs.includes(nom)){showToast('Déjà présent','error');return;}refs.operateurs.push(nom);document.getElementById('new-operateur-nom').value='';renderOperateursList();}
-function removeOperateur(idx){refs.operateurs.splice(idx,1);renderOperateursList();}
-async function saveOperateurs(){config.operateurActif=document.getElementById('cfg-operateur-actif').value;const ok=await surgicalSave();if(ok)showToast('✅ Opérateurs sauvegardés !','success');}
+
+function openOperateurForm(idx) {
+  currentOpIdx = idx;
+  opPhotoData  = null;
+  const card = document.getElementById('op-form-card');
+  const title = document.getElementById('op-form-title');
+  // reset
+  ['op-nom','op-prenom','op-dob','op-age','op-lieu-naissance','op-num-carte',
+   'op-whatsapp','op-login','op-mdp','op-temoin-nom','op-temoin-prenom',
+   'op-temoin-whatsapp','op-temoin-residence'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('op-type-carte').value = '';
+  document.getElementById('op-photo-preview').innerHTML = '👷';
+  document.getElementById('op-photo-input').value = '';
+
+  if (idx === -1) {
+    title.textContent = '👷 Nouvelle fiche opérateur';
+  } else {
+    title.textContent = '✏️ Modifier la fiche opérateur';
+    const op = refs.operateurs[idx];
+    if (typeof op === 'string') {
+      document.getElementById('op-nom').value   = op;
+      document.getElementById('op-login').value = op;
+    } else {
+      document.getElementById('op-nom').value              = op.nom || '';
+      document.getElementById('op-prenom').value           = op.prenom || '';
+      document.getElementById('op-dob').value              = op.dob || '';
+      document.getElementById('op-age').value              = op.age || '';
+      document.getElementById('op-lieu-naissance').value   = op.lieuNaissance || '';
+      document.getElementById('op-type-carte').value       = op.typeCarte || '';
+      document.getElementById('op-num-carte').value        = op.numCarte || '';
+      document.getElementById('op-whatsapp').value         = op.whatsapp || '';
+      document.getElementById('op-login').value            = op.login || op.nom || '';
+      document.getElementById('op-temoin-nom').value       = op.temoinNom || '';
+      document.getElementById('op-temoin-prenom').value    = op.temoinPrenom || '';
+      document.getElementById('op-temoin-whatsapp').value  = op.temoinWhatsapp || '';
+      document.getElementById('op-temoin-residence').value = op.temoinResidence || '';
+      if (op.photo) {
+        opPhotoData = op.photo;
+        document.getElementById('op-photo-preview').innerHTML =
+          `<img src="${op.photo}" style="width:100%;height:100%;object-fit:cover;">`;
+      }
+    }
+  }
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeOperateurForm() {
+  document.getElementById('op-form-card').style.display = 'none';
+  currentOpIdx = -1; opPhotoData = null;
+}
+
+function calcAge() {
+  const dob = document.getElementById('op-dob').value;
+  if (!dob) { document.getElementById('op-age').value = ''; return; }
+  const diff = Date.now() - new Date(dob).getTime();
+  const age  = Math.floor(diff / (365.25 * 24 * 3600 * 1000));
+  document.getElementById('op-age').value = age + ' ans';
+}
+
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Photo trop lourde (max 2 Mo)', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    opPhotoData = e.target.result;
+    document.getElementById('op-photo-preview').innerHTML =
+      `<img src="${opPhotoData}" style="width:100%;height:100%;object-fit:cover;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveOperateurForm() {
+  const nom = document.getElementById('op-nom').value.trim();
+  if (!nom) { showToast('Le nom est obligatoire', 'error'); return; }
+  const prenom          = document.getElementById('op-prenom').value.trim();
+  const dob             = document.getElementById('op-dob').value;
+  const age             = document.getElementById('op-age').value;
+  const lieuNaissance   = document.getElementById('op-lieu-naissance').value.trim();
+  const typeCarte       = document.getElementById('op-type-carte').value;
+  const numCarte        = document.getElementById('op-num-carte').value.trim();
+  const whatsapp        = document.getElementById('op-whatsapp').value.trim();
+  const login           = document.getElementById('op-login').value.trim() || nom.toLowerCase().replace(/\s+/g,'.');
+  const mdpNew          = document.getElementById('op-mdp').value;
+  const temoinNom       = document.getElementById('op-temoin-nom').value.trim();
+  const temoinPrenom    = document.getElementById('op-temoin-prenom').value.trim();
+  const temoinWhatsapp  = document.getElementById('op-temoin-whatsapp').value.trim();
+  const temoinResidence = document.getElementById('op-temoin-residence').value.trim();
+
+  if (!refs.operateurs) refs.operateurs = [];
+
+  const existing = currentOpIdx >= 0 ? refs.operateurs[currentOpIdx] : null;
+  const mdp = mdpNew || (existing && existing.mdp) || config.mdpOperateur || '1234';
+
+  const ficheOp = { nom, prenom, dob, age, lieuNaissance, typeCarte, numCarte,
+    whatsapp, login, mdp, photo: opPhotoData || (existing && existing.photo) || null,
+    temoinNom, temoinPrenom, temoinWhatsapp, temoinResidence };
+
+  if (currentOpIdx === -1) {
+    refs.operateurs.push(ficheOp);
+    showToast('✅ Opérateur ajouté', 'success');
+  } else {
+    refs.operateurs[currentOpIdx] = ficheOp;
+    showToast('✅ Fiche mise à jour', 'success');
+  }
+  closeOperateurForm();
+  renderOperateursList();
+}
+
+function removeOperateur(idx) {
+  if (!confirm('Supprimer cet opérateur ?')) return;
+  refs.operateurs.splice(idx, 1);
+  renderOperateursList();
+}
+
+async function saveOperateurs() {
+  config.operateurActif = document.getElementById('cfg-operateur-actif').value;
+  const ok = await surgicalSave();
+  if (ok) showToast('✅ Opérateurs sauvegardés !', 'success');
+}
+
+// Créer l'opérateur par défaut si aucun n'existe
+function ensureDefaultOperateur() {
+  if (!refs.operateurs) refs.operateurs = [];
+  if (refs.operateurs.length === 0) {
+    refs.operateurs.push({
+      nom: 'Opérateur', prenom: '', dob: '', age: '', lieuNaissance: '',
+      typeCarte: '', numCarte: '', whatsapp: '', login: 'operateur',
+      mdp: config.mdpOperateur || '1234', photo: null,
+      temoinNom: '', temoinPrenom: '', temoinWhatsapp: '', temoinResidence: ''
+    });
+  }
+}
 
 // ════════════════════════════════════════════
 // SÉCURITÉ
@@ -851,8 +1109,95 @@ function updateDriveUI(){
 let toastTimer;
 function showToast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className='show '+type;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className='',3000);}
 
+// ════════════════════════════════════════════
+// DÉCONNEXION
+// ════════════════════════════════════════════
+// ════════════════════════════════════════════
+// HISTORIQUE DE CONNEXION
+// ════════════════════════════════════════════
+const LOGIN_HISTORY_KEY = 'pb_admin_login_history';
+const LOGIN_HISTORY_MAX = 200;
+
+function getLoginHistory() {
+  try { return JSON.parse(localStorage.getItem(LOGIN_HISTORY_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveLoginHistory(hist) {
+  localStorage.setItem(LOGIN_HISTORY_KEY, JSON.stringify(hist.slice(0, LOGIN_HISTORY_MAX)));
+}
+function logLoginEvent(type, detail='') {
+  // type: 'success' | 'fail' | 'logout'
+  const hist = getLoginHistory();
+  const now  = new Date();
+  hist.unshift({
+    type,
+    detail,
+    date: now.toLocaleDateString('fr-FR'),
+    heure: now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'}),
+    ts: now.getTime()
+  });
+  saveLoginHistory(hist);
+  renderLoginHistory();
+}
+
+function renderLoginHistory() {
+  const el = document.getElementById('login-history-list');
+  if (!el) return;
+  const hist = getLoginHistory();
+  if (hist.length === 0) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">Aucun historique pour le moment</div>';
+    updateHistoStats(0, 0, 0); return;
+  }
+  const ok   = hist.filter(h => h.type === 'success').length;
+  const fail = hist.filter(h => h.type === 'fail').length;
+  const out  = hist.filter(h => h.type === 'logout').length;
+  updateHistoStats(ok, fail, out);
+
+  el.innerHTML = hist.map(h => {
+    const cfg = {
+      success: { icon:'✅', label:'Connexion réussie',    color:'var(--green2)',  bg:'rgba(76,175,80,.08)',  border:'rgba(76,175,80,.2)'  },
+      fail:    { icon:'❌', label:'Tentative échouée',    color:'var(--red)',     bg:'rgba(239,83,80,.08)',  border:'rgba(239,83,80,.2)'  },
+      logout:  { icon:'🚪', label:'Déconnexion',          color:'var(--blue)',    bg:'rgba(66,165,245,.08)', border:'rgba(66,165,245,.2)' },
+    }[h.type] || { icon:'•', label:h.type, color:'var(--text3)', bg:'var(--surface2)', border:'var(--border)' };
+    return `
+    <div style="display:flex;align-items:center;gap:10px;background:${cfg.bg};border:1px solid ${cfg.border};border-radius:var(--radius2);padding:9px 12px;">
+      <div style="font-size:16px;flex-shrink:0;">${cfg.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:600;color:${cfg.color};">${cfg.label}${h.detail?' <span style="font-weight:400;color:var(--text3);">— '+h.detail+'</span>':''}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace;">${h.date} · ${h.heure}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateHistoStats(ok, fail, out) {
+  const s1 = document.getElementById('histo-stat-ok');
+  const s2 = document.getElementById('histo-stat-fail');
+  const s3 = document.getElementById('histo-stat-out');
+  if (s1) s1.textContent = `✅ ${ok} réussie${ok>1?'s':''}`;
+  if (s2) s2.textContent = `❌ ${fail} échouée${fail>1?'s':''}`;
+  if (s3) s3.textContent = `🚪 ${out} déconnexion${out>1?'s':''}`;
+}
+
+function clearLoginHistory() {
+  if (!confirm('Effacer tout l\'historique de connexion ?')) return;
+  localStorage.removeItem(LOGIN_HISTORY_KEY);
+  renderLoginHistory();
+  showToast('🗑️ Historique effacé', 'success');
+}
+
+function doLogout(){
+  if(!confirm('Quitter la session admin ?')) return;
+  logLoginEvent('logout');
+  sessionStorage.removeItem('pb_config_cache');
+  document.getElementById('app').style.display='none';
+  document.getElementById('lock-screen').style.display='flex';
+  document.getElementById('lock-input').value='';
+  document.getElementById('lock-error').style.display='none';
+}
+
 // Init
 document.getElementById('cfg-prix-date').value=new Date().toISOString().slice(0,10);
+renderLoginHistory();
 </script>
 </body>
 </html>
